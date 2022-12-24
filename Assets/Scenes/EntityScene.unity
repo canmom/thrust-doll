@@ -132,7 +132,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 249719545}
-  - component: {fileID: 249719544}
+  - component: {fileID: 249719546}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -140,77 +140,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &249719544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 249719543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 77ef16f81a6682015aa60cda84f672e0,
-    type: 3}
-  m_NotificationBehavior: 2
-  m_UIInputModule: {fileID: 0}
-  m_DeviceLostEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_DeviceRegainedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ControlsChangedEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: c6ffd1aa-265a-46de-bd82-152a94098080
-    m_ActionName: UI/Navigate[/Gamepad/leftStick/up,/Gamepad/rightStick/up,/Gamepad/leftStick/down,/Gamepad/rightStick/down,/Gamepad/leftStick/left,/Gamepad/rightStick/left,/Gamepad/leftStick/right,/Gamepad/rightStick/right,/Gamepad/dpad,/TabletMonitorPad/Stick/up,/TabletMonitorTouchStrip/Stick/up,/TabletMonitorPad/Stick/down,/TabletMonitorTouchStrip/Stick/down,/TabletMonitorPad/Stick/left,/TabletMonitorTouchStrip/Stick/left,/TabletMonitorPad/Stick/right,/TabletMonitorTouchStrip/Stick/right,/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2fcd806a-bcc3-4e08-abb9-aafb05433298
-    m_ActionName: UI/Submit[/Keyboard/enter,/TabletMonitorPad/trigger,/TabletMonitorTouchStrip/trigger,/Gamepad/buttonSouth]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: a11cfcb0-f5db-4cf1-b4ee-f568e892352b
-    m_ActionName: UI/Cancel[/Keyboard/escape,/Gamepad/buttonEast]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 0ed6a4e7-7e99-4d50-b6aa-00d22393859d
-    m_ActionName: UI/Point[/Mouse/position]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 36293602-488d-4d8e-ade4-7f93f51d8c90
-    m_ActionName: UI/Click[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: b571bf41-144a-4cdb-83c8-c7203fda3ffb
-    m_ActionName: UI/ScrollWheel[/Mouse/scroll]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 5aa566d4-9110-4ed0-982a-3a602fa58743
-    m_ActionName: UI/MiddleClick[/Mouse/middleButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 95fb8589-1e65-48d1-8e03-dfe759a961b8
-    m_ActionName: UI/RightClick[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 8c1ab3e5-21fb-4e83-9627-34f42b676d6f
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 586fe61f-c0ee-4568-9bf7-82df1cbd3af4
-    m_ActionName: UI/TrackedDeviceOrientation
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
-  m_DefaultActionMap: UI
-  m_SplitScreenIndex: -1
-  m_Camera: {fileID: 960008276}
 --- !u!4 &249719545
 Transform:
   m_ObjectHideFlags: 0
@@ -226,6 +155,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &249719546
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249719543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef314ca0ac03468be9d9695862bdca38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ClickAction:
+    m_Name: Click
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: d9e581f1-087e-469f-8c62-7f8c2a66f342
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: Click
+      m_Id: cbf9b36f-0677-4114-938f-04882cda657e
+      m_Path: OneModifier
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Click
+      m_Flags: 4
+    - m_Name: modifier
+      m_Id: c3ab5cb9-b1a1-4a09-85ac-3b87daad9cbe
+      m_Path: <Mouse>/leftButton
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Click
+      m_Flags: 8
+    - m_Name: binding
+      m_Id: 678e706b-4a11-4f60-8218-d6f13ac76f7b
+      m_Path: <Mouse>/position
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Click
+      m_Flags: 8
+    m_Flags: 0
+  Camera: {fileID: 960008276}
 --- !u!1 &872101244
 GameObject:
   m_ObjectHideFlags: 0
