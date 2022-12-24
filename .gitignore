@@ -76,3 +76,10 @@ mono_crash*.blob
 
 # UI Elements schema
 /UIElementsSchema/
+
+# Sublime Text project files
+*.sublime-project
+*.sublime-workspace
+
+# Cache files that shouldn't be comitted
+Assets/SceneDependencyCache/*
