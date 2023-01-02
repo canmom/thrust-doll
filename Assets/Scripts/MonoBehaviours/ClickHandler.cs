@@ -39,7 +39,11 @@ public class ClickHandler : MonoBehaviour
 
         RaycastInput input = new RaycastInput() {
             Start = ray.origin,
-            Filter = CollisionFilter.Default,
+            Filter = new CollisionFilter
+            {
+                BelongsTo = (uint) CollisionLayers.ClickEvent,
+                CollidesWith = (uint) CollisionLayers.Toggleable
+            },
             End = ray.GetPoint(Camera.farClipPlane)
         };
 

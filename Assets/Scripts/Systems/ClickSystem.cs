@@ -5,7 +5,6 @@ using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
-[UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 [UpdateAfter(typeof(PhysicsSimulationGroup))]
 [BurstCompile]
 partial struct ClickSystem : ISystem
@@ -24,17 +23,19 @@ partial struct ClickSystem : ISystem
     public void OnUpdate(ref SystemState state)
     {
         PhysicsWorldSingleton physicsWorld = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+        var ecbSingleton = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+        var ecb = ecbSingleton.CreateCommandBuffer(state.WorldUnmanaged);
 
-        foreach(var input in SystemAPI.Query<DynamicBuffer<UIClick>>())
+        foreach(var inputBuffer in SystemAPI.Query<DynamicBuffer<UIClick>>())
         {
-            foreach(var placementInput in input)
+            foreach(var uiClick in inputBuffer)
             {
-                if(physicsWorld.CastRay(placementInput.Value,out var hit))
+                if(physicsWorld.CastRay(uiClick.Value,out var hit))
                 {
-                    Debug.Log($"{hit.Position}");
+                    ecb.DestroyEntity(hit.Entity);
                 }
             }
-            input.Clear();
+            inputBuffer.Clear();
         }
     }
 }
