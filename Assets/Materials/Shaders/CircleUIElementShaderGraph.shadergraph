@@ -76,9 +76,6 @@
             "m_Id": "eada39419d654ccc9b494c4ee0e58a17"
         },
         {
-            "m_Id": "cb2e940365d54a509579914b5f764e9c"
-        },
-        {
             "m_Id": "3756d68d89a946a0a4a6c9ef0fc82382"
         },
         {
@@ -476,9 +473,6 @@
             },
             {
                 "m_Id": "4d0318c4aa824154af5ae4b091748644"
-            },
-            {
-                "m_Id": "cb2e940365d54a509579914b5f764e9c"
             }
         ]
     },
@@ -1981,31 +1975,6 @@
 
 {
     "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
-    "m_ObjectId": "94d82e3bfef445ba9fa48084a19b4663",
-    "m_Id": 0,
-    "m_DisplayName": "CustomInterpolator",
-    "m_SlotType": 0,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "CustomInterpolator",
-    "m_StageCapability": 1,
-    "m_Value": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "w": 0.0
-    },
-    "m_DefaultValue": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0,
-        "w": 0.0
-    },
-    "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "97bb1f480bf54093b40e848253604209",
     "m_Id": 1,
@@ -2551,40 +2520,6 @@
         "z": 0.0,
         "w": 0.0
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.BlockNode",
-    "m_ObjectId": "cb2e940365d54a509579914b5f764e9c",
-    "m_Group": {
-        "m_Id": ""
-    },
-    "m_Name": "VertexDescription.CustomInterpolator",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 0.0,
-            "height": 0.0
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "94d82e3bfef445ba9fa48084a19b4663"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": true,
-    "m_DismissedVersion": 0,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_SerializedDescriptor": "VertexDescription.CustomInterpolator#4"
 }
 
 {

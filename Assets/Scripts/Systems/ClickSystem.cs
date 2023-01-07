@@ -5,6 +5,7 @@ using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
+[UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 [UpdateAfter(typeof(PhysicsSimulationGroup))]
 [BurstCompile]
 partial struct ClickSystem : ISystem
@@ -32,7 +33,13 @@ partial struct ClickSystem : ISystem
             {
                 if(physicsWorld.CastRay(uiClick.Value,out var hit))
                 {
-                    ecb.DestroyEntity(hit.Entity);
+                    var uiToggleEntity = SystemAPI.GetComponent<Upgrade>(hit.Entity).UIToggle;
+
+                    UIToggleState oldState = SystemAPI.GetComponent<UIToggleState>(uiToggleEntity);
+
+                    oldState.On = !oldState.On;
+                    
+                    SystemAPI.SetComponent<UIToggleState>(uiToggleEntity, oldState);
                 }
             }
             inputBuffer.Clear();
