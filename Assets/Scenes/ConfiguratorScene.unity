@@ -372,7 +372,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 924569143}
-  - component: {fileID: 924569142}
+  - component: {fileID: 924569144}
   m_Layer: 0
   m_Name: UIToggleSpawner
   m_TagString: Untagged
@@ -380,20 +380,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &924569142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 924569141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce622a3c7fcfe2c8483c2e9846b4d501, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UITogglePrefab: {fileID: 6089148108075634907, guid: 58024a693ef3986939c0acd3499bbe1c,
-    type: 3}
 --- !u!4 &924569143
 Transform:
   m_ObjectHideFlags: 0
@@ -409,6 +395,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &924569144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 924569141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a03f43187f3a6275b3c2c4b63aabfce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UITogglePrefab: {fileID: 6089148108075634907, guid: 58024a693ef3986939c0acd3499bbe1c,
+    type: 3}
+  StateSpringStiffness: 150
+  StateSpringDamping: 14
 --- !u!1 &1023170306
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,5 +10,6 @@ class UIToggleBaker : Baker<UIToggleAuthoring>
     {
         AddComponent<UIToggleRingThickness>();
         AddComponent<UIToggleCentreOpacity>();
+        AddComponent<StateSpring>();
     }
 }

@@ -16,9 +16,17 @@ partial struct UIToggleJob : IJobEntity
     {
         bool hovering = HoveringLookup.IsComponentEnabled(parent.Value);
         bool isOn = OnLookup.IsComponentEnabled(parent.Value);
+
+        //set the target for animation
+        uiToggle.StateTarget = hovering ? 1f : 0f;
+
+        //displacement for use in LERP; 0 to 1 with overshoots possible
+        float disp = uiToggle.StateDisplacement;
+
         uiToggle.Opacity = isOn ? 0.6f : 0f;
-        uiToggle.Scale = hovering ? 0.03f : 0.01f;
-        uiToggle.Thickness = hovering ? 0.2f : (isOn ? 0f : 0.6f);
+        uiToggle.Scale = 0.01f + 0.02f * disp;
+        //uiToggle.Thickness = hovering ? 0.2f : (isOn ? 0f : 0.6f);
+        uiToggle.Thickness = isOn ? 0f + 0.2f * disp : 0.6f - 0.4f * disp;
     }
 }
 

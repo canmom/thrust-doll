@@ -6,6 +6,7 @@ readonly partial struct UIToggleAspect : IAspect
 {
     readonly RefRW<UIToggleRingThickness> RingThickness;
     readonly RefRW<UIToggleCentreOpacity> CentreOpacity;
+    readonly RefRW<StateSpring> StateSpring;
 
     readonly TransformAspect Transform;
 
@@ -22,5 +23,14 @@ readonly partial struct UIToggleAspect : IAspect
     public float Scale {
         get => Transform.LocalScale;
         set => Transform.LocalScale = value;
+    }
+
+    public float StateTarget {
+        get => StateSpring.ValueRO.Target;
+        set => StateSpring.ValueRW.Target = value;
+    }
+
+    public float StateDisplacement {
+        get => StateSpring.ValueRO.Displacement;
     }
 }
