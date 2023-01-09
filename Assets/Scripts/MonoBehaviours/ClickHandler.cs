@@ -8,6 +8,7 @@ using Unity.Physics;
 public class ClickHandler : MonoBehaviour
 {
     public InputAction ClickAction;
+    public InputAction PointerMoveAction;
     public Camera Camera;
 
     private Entity Entity;
@@ -19,25 +20,42 @@ public class ClickHandler : MonoBehaviour
         ClickAction.performed += OnClick;
         ClickAction.Enable();
 
+        PointerMoveAction.performed += OnMove;
+        PointerMoveAction.Enable();
+
         Camera = Camera == null ? Camera.main : Camera;
 
         World = World.DefaultGameObjectInjectionWorld;
     }
 
+    private void OnMove(InputAction.CallbackContext context)
+    {
+        CheckEntityExists();
+
+        World.EntityManager.GetBuffer<MouseMove>(Entity).Add(new MouseMove() { Ray = Ray(context)});
+    }
+
     private void OnClick(InputAction.CallbackContext context)
     {
+        CheckEntityExists();
+
+        World.EntityManager.GetBuffer<MouseClick>(Entity).Add(new MouseClick() { Clicked = true });
+    }
+
+    private void OnDisable()
+    {
+        ClickAction.performed -= OnClick;
+        ClickAction.Disable();
+
+        PointerMoveAction.performed -= OnMove;
+        PointerMoveAction.Disable();
+    }
+
+    private RaycastInput Ray(InputAction.CallbackContext context) {
         Vector2 screenPosition = context.ReadValue<Vector2>();
         UnityEngine.Ray ray = Camera.ScreenPointToRay(screenPosition);
 
-        Debug.Log(ray.GetPoint(Camera.farClipPlane));
-
-        if(World.IsCreated && !World.EntityManager.Exists(Entity))
-        {
-            Entity = World.EntityManager.CreateEntity();
-            World.EntityManager.AddBuffer<UIClick>(Entity);
-        }
-
-        RaycastInput input = new RaycastInput() {
+        return new RaycastInput() {
             Start = ray.origin,
             Filter = new CollisionFilter
             {
@@ -46,18 +64,24 @@ public class ClickHandler : MonoBehaviour
             },
             End = ray.GetPoint(Camera.farClipPlane)
         };
-
-        World.EntityManager.GetBuffer<UIClick>(Entity).Add(new UIClick() {Value = input});
     }
 
-    private void OnDisable()
-    {
-        ClickAction.started -= OnClick;
-        ClickAction.Disable();
+    private void CheckEntityExists() {
+        if(World.IsCreated && !World.EntityManager.Exists(Entity))
+        {
+            Entity = World.EntityManager.CreateEntity();
+            World.EntityManager.AddBuffer<MouseMove>(Entity);
+            World.EntityManager.AddBuffer<MouseClick>(Entity);
+        }
     }
 }
 
-public struct UIClick : IBufferElementData
+public struct MouseMove : IBufferElementData
 {
-    public RaycastInput Value;
+    public RaycastInput Ray;
+}
+
+public struct MouseClick : IBufferElementData
+{
+    public bool Clicked;
 }

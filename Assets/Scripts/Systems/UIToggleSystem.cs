@@ -1,17 +1,24 @@
 using System;
 using Unity.Burst;
 using Unity.Entities;
+using Unity.Transforms;
+using Unity.Collections;
 
 [BurstCompile]
+[UpdateAfter(typeof(MouseHandlingSystem))]
 partial struct UIToggleJob : IJobEntity
 {
     public float DeltaTime;
+    [ReadOnly] public ComponentLookup<Hovering> HoveringLookup;
+    [ReadOnly] public ComponentLookup<On> OnLookup;
 
-    void Execute([ChunkIndexInQuery] int chunkIndex, ref UIToggleAspect uiToggle)
+    void Execute([ChunkIndexInQuery] int chunkIndex, ref UIToggleAspect uiToggle, in Parent parent)
     {
-        uiToggle.Opacity = uiToggle.On ? 0.6f : 0f;
-        uiToggle.Scale = uiToggle.Hover ? 0.04f : 0.01f;
-        uiToggle.Thickness = uiToggle.Hover ? 0.125f : (uiToggle.On ? 0f : 0.5f);
+        bool hovering = HoveringLookup.IsComponentEnabled(parent.Value);
+        bool isOn = OnLookup.IsComponentEnabled(parent.Value);
+        uiToggle.Opacity = isOn ? 0.6f : 0f;
+        uiToggle.Scale = hovering ? 0.03f : 0.01f;
+        uiToggle.Thickness = hovering ? 0.2f : (isOn ? 0f : 0.6f);
     }
 }
 
@@ -34,7 +41,9 @@ partial struct UIToggleSystem : ISystem
     {
         var uiToggleJob = new UIToggleJob
         {
-            DeltaTime = SystemAPI.Time.DeltaTime
+            DeltaTime = SystemAPI.Time.DeltaTime,
+            HoveringLookup = SystemAPI.GetComponentLookup<Hovering>(true),
+            OnLookup = SystemAPI.GetComponentLookup<On>(true)
         };
         uiToggleJob.ScheduleParallel();
     }

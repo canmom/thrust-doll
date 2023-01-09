@@ -12,9 +12,3 @@ struct UIToggleCentreOpacity : IComponentData
 {
     public float Opacity;
 }
-
-struct UIToggleState : IComponentData
-{
-    public bool On;
-    public bool Hover;
-}

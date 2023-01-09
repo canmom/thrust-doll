@@ -11,6 +11,10 @@ class UpgradeBaker : Baker<UpgradeAuthoring>
 {
     public override void Bake(UpgradeAuthoring authoring)
     {
-        AddComponent(new Upgrade {});
+        AddComponent<Upgrade>();
+        AddComponent<On>();
+        SetComponentEnabled<On>(GetEntity(),false);
+        AddComponent<Hovering>();
+        SetComponentEnabled<Hovering>(GetEntity(),false);
     }
 }
