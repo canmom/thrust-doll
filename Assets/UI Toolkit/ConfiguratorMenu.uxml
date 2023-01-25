@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Configurator.uss?fileID=7433441132597879392&amp;guid=d60e53bcf16c139e69a757fb4ada4f89&amp;type=3#Configurator" />
+    <ui:Label tabindex="-1" text="DOLL//SPEC" display-tooltip-when-elided="true" name="Title" class="title" style="-unity-font-definition: url(&apos;project://database/Assets/Fonts/BebasNeue-Regular%20SDF.asset?fileID=11400000&amp;guid=6d8a6278113870eb88c63b408e5ea6e3&amp;type=2#BebasNeue-Regular SDF&apos;); -unity-font-style: normal; margin-bottom: -20px; margin-top: 0; padding-top: 0; padding-bottom: 0;" />
+    <ui:Label tabindex="-1" text="DOLL//SPEC" display-tooltip-when-elided="true" name="Title" class="title" style="-unity-font-definition: url(&apos;project://database/Assets/Fonts/BebasNeue-Regular%20SDF.asset?fileID=11400000&amp;guid=6d8a6278113870eb88c63b408e5ea6e3&amp;type=2#BebasNeue-Regular SDF&apos;); -unity-font-style: normal; position: absolute; transform-origin: left top; rotate: 90deg; right: -318px; font-size: 80px; top: 1px;" />
+    <ui:Button text="Launch" display-tooltip-when-elided="true" name="LaunchButton" class="title" style="position: absolute; right: 10px; bottom: 10px; -unity-font-style: normal; height: 109px; background-color: rgba(255, 255, 255, 0.35);" />
+    <ui:Label tabindex="-1" text="Second generation THRUST//DOLL equipped with:" display-tooltip-when-elided="true" name="introblock" class="paragraph" style="width: 40%;" />
+    <ui:VisualElement name="examplepanel" class="upgradepanel">
+        <ui:Label tabindex="-1" text="Adrenal Hyperprocessor" display-tooltip-when-elided="true" name="upgradename" class="paragraph upgradename" />
+        <ui:Label tabindex="-1" text="Shunting thoughts into an extracranial neural subsystem, the DOLL is able to process vast amounts of data at critical moments, dramatically improviing its reaction time at the cost of rapid degeneration of its faculties." display-tooltip-when-elided="true" name="description" class="paragraph description" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,29 @@
+.title {
+    -unity-font-style: bold;
+    font-size: 120px;
+    -unity-font-definition: url('project://database/Assets/Fonts/BebasNeue-Regular%20SDF.asset?fileID=11400000&guid=6d8a6278113870eb88c63b408e5ea6e3&type=2#BebasNeue-Regular SDF');
+}
+
+* {
+    color: rgb(255, 255, 255);
+}
+
+.paragraph {
+    font-size: 25px;
+    -unity-font-definition: url('project://database/Assets/Fonts/Aero%20Matics%20Light%20SDF.asset?fileID=11400000&guid=8fa2a6e948313ff56ab05efc5278e31b&type=2#Aero Matics Light SDF');
+    width: 40%;
+    flex-grow: 0;
+    white-space: normal;
+}
+
+.upgradepanel {
+    margin-top: 10px;
+}
+
+.upgradename {
+    font-size: 32px;
+}
+
+.description {
+    font-size: 21px;
+}
