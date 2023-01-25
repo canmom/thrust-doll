@@ -11,11 +11,14 @@ partial struct UIToggleJob : IJobEntity
     public float DeltaTime;
     [ReadOnly] public ComponentLookup<Hovering> HoveringLookup;
     [ReadOnly] public ComponentLookup<On> OnLookup;
+    [ReadOnly] public ComponentLookup<LocalToWorld> TranslationLookup;
 
-    void Execute([ChunkIndexInQuery] int chunkIndex, ref UIToggleAspect uiToggle, in Parent parent)
+    void Execute([ChunkIndexInQuery] int chunkIndex, ref UIToggleAspect uiToggle)
     {
-        bool hovering = HoveringLookup.IsComponentEnabled(parent.Value);
-        bool isOn = OnLookup.IsComponentEnabled(parent.Value);
+        bool hovering = HoveringLookup.IsComponentEnabled(uiToggle.BelongsTo);
+        bool isOn = OnLookup.IsComponentEnabled(uiToggle.BelongsTo);
+
+        uiToggle.Translation = TranslationLookup.GetRefRO(uiToggle.BelongsTo).ValueRO.Value.c3.xyz;
 
         //set the target for animation
         uiToggle.StateTarget = hovering ? 1f : 0f;
@@ -51,7 +54,8 @@ partial struct UIToggleSystem : ISystem
         {
             DeltaTime = SystemAPI.Time.DeltaTime,
             HoveringLookup = SystemAPI.GetComponentLookup<Hovering>(true),
-            OnLookup = SystemAPI.GetComponentLookup<On>(true)
+            OnLookup = SystemAPI.GetComponentLookup<On>(true),
+            TranslationLookup = SystemAPI.GetComponentLookup<LocalToWorld>(true)
         };
         uiToggleJob.ScheduleParallel();
     }

@@ -12,3 +12,8 @@ struct UIToggleCentreOpacity : IComponentData
 {
     public float Opacity;
 }
+
+struct UIToggle : IComponentData
+{
+    public Entity BelongsTo;
+}

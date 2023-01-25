@@ -5,25 +5,6 @@ using Unity.Entities;
 using Unity.Physics;
 using Unity.Physics.Systems;
 
-// [BurstCompile]
-// partial struct MouseHandlingSystem : ISystem
-// {
-//     [BurstCompile]
-//     public void OnCreate(ref SystemState state)
-//     {
-//     }
-
-//     [BurstCompile]
-//     public void OnDestroy(ref SystemState state)
-//     {
-//     }
-
-//     [BurstCompile]
-//     public void OnUpdate(ref SystemState state)
-//     {
-//     }
-// }
-
 [UpdateInGroup(typeof(FixedStepSimulationSystemGroup))]
 [UpdateAfter(typeof(PhysicsSimulationGroup))]
 [BurstCompile]

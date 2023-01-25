@@ -32,10 +32,14 @@ partial struct UIToggleSetupSystem : ISystem
         foreach (var (upgradeRef, parentEntity) in SystemAPI.Query<RefRW<Upgrade>>().WithEntityAccess())
         {
             var instance = ecb.Instantiate(prefab);
-            ecb.SetComponent(instance,LocalTransform.Identity);
+            ecb.SetComponent(instance,new Translation { Value = Unity.Mathematics.float3.zero });
+            ecb.AddComponent(instance,new LocalToWorld{ Value = Unity.Mathematics.float4x4.identity });
 
             //define the coordinates to be relative to the parent; ParentSystem will take care of the rest.
-            ecb.AddComponent(instance,new Parent{ Value = parentEntity });
+            // ecb.AddComponent(instance,new Parent{ Value = parentEntity });
+            // ecb.AddComponent(instance,new LocalToParent{ Value = Unity.Mathematics.float4x4.identity });
+
+            ecb.AddComponent(instance,new UIToggle { BelongsTo = parentEntity });
 
             //store a reference to its UIToggle on the component.
             //IT IS VERY IMPORTANT THAT YOU USE THE ECB FOR THIS OR YOU'LL HAVE A NEGATIVE TEMPORARY ENTITY

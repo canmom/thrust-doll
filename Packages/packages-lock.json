@@ -1,11 +1,35 @@
 {
   "dependencies": {
+    "com.latios.latiosframework": {
+      "version": "0.6.4",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.entities": "1.0.0-pre.15",
+        "com.unity.audio.dspgraph": "0.1.0-preview.22",
+        "com.unity.entities.graphics": "1.0.0-pre.15"
+      },
+      "url": "https://package.openupm.com"
+    },
     "com.unity.ai.navigation": {
       "version": "1.1.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.modules.ai": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.audio.dspgraph": {
+      "version": "0.1.0-preview.22",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.6.4",
+        "com.unity.media.utilities": "0.1.0-preview.13",
+        "com.unity.test-framework": "1.1.27",
+        "com.unity.modules.audio": "1.0.0",
+        "com.unity.modules.video": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -77,7 +101,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "3.0.16",
+      "version": "3.0.17",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -86,7 +110,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.16",
+      "version": "2.0.17",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -115,6 +139,17 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.media.utilities": {
+      "version": "0.1.0-preview.13",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.1",
+        "com.unity.burst": "1.5.3",
+        "com.unity.test-framework": "1.1.23"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.mono-cecil": {
@@ -304,7 +339,7 @@
       "dependencies": {}
     },
     "com.unity.visualscripting": {
-      "version": "1.7.8",
+      "version": "1.8.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
