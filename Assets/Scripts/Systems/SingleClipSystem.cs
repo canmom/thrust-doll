@@ -6,32 +6,28 @@ using Unity.Mathematics;
 using Unity.Transforms;
 
 [UpdateBefore(typeof(TransformSystemGroup))]
-public partial class SingleClipPlayerSystem : SubSystem
+public partial class SingleClipSystem : SystemBase
 {
     protected override void OnUpdate()
     {
         float t = (float)SystemAPI.Time.ElapsedTime;
 
-        Entities.ForEach((in DynamicBuffer<BoneReference> bones, in SingleClip singleClip) =>
+        JobHandle jobHandle = Entities.ForEach((ref Translation trans, ref Rotation rot, ref NonUniformScale scale, in BoneOwningSkeletonReference skeletonRef, in BoneIndex boneIndex) =>
         {
-            ref var clip = ref singleClip.blob.Value.clips[0];
+            if (boneIndex.index == 0)
+                return;
+            var singleClip = SystemAPI.GetComponent<SingleClip>(skeletonRef.skeletonRoot);
 
-            var clipTime = clip.LoopToClipTime(t);
+            ref var clip     = ref singleClip.blob.Value.clips[0];
+            var     clipTime = clip.LoopToClipTime(t);
 
-            for (int i = 1; i < bones.Length; i++)
-            {
-                var boneTransform = clip.SampleBone(i, clipTime);
+            var boneTransform = clip.SampleBone(boneIndex.index, clipTime);
 
-                var trans = new Translation { Value = boneTransform.translation };
-                var rot   = new Rotation { Value = boneTransform.rotation };
-                // var scale = new NonUniformScale { Value = boneTransform.scale };
+            trans.Value = boneTransform.translation;
+            rot.Value   = boneTransform.rotation;
+            scale.Value = boneTransform.scale;
+        }).ScheduleParallel(this.Dependency);
 
-                Entity entity = bones[i].bone;
-
-                SystemAPI.SetComponent(entity, trans);
-                SystemAPI.SetComponent(entity, rot);
-                // SystemAPI.SetComponent(entity, scale);
-            }
-        }).Schedule();
+        jobHandle.Complete();
     }
 }
