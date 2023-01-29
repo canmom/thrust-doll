@@ -83,3 +83,8 @@ mono_crash*.blob
 
 # Cache files that shouldn't be comitted
 Assets/SceneDependencyCache/*
+
+# Fonts are large, don't commit them
+Assets/Fonts/**/*.ttf
+Assets/Fonts/**/*.otf
+Assets/Fonts/**/*.asset

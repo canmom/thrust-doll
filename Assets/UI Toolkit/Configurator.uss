@@ -10,7 +10,7 @@
 
 .paragraph {
     font-size: 25px;
-    -unity-font-definition: url('project://database/Assets/Fonts/Aero%20Matics%20Light%20SDF.asset?fileID=11400000&guid=8fa2a6e948313ff56ab05efc5278e31b&type=2#Aero Matics Light SDF');
+    -unity-font-definition: url('project://database/Assets/Fonts/Sofia%20Sans/static/SofiaSans-Thin%20SDF.asset?fileID=11400000&guid=5e7d4336daac149d08694d94bc8d7d5b&type=2#SofiaSans-Thin SDF');
     width: 40%;
     flex-grow: 0;
     white-space: normal;
@@ -22,6 +22,7 @@
 
 .upgradename {
     font-size: 32px;
+    -unity-font-definition: url('project://database/Assets/Fonts/Sofia%20Sans/static/SofiaSans-Light%20SDF.asset?fileID=11400000&guid=d788e08445b1e6296a2e57bb504c58de&type=2#SofiaSans-Light SDF');
 }
 
 .description {
