@@ -28,7 +28,7 @@ partial struct UIToggleJob : IJobEntity
         float disp = uiToggle.StateDisplacement;
 
         uiToggle.Opacity = isOn ? 0.6f : 0f;
-        uiToggle.Scale = 0.005f + 0.005f * disp;
+        uiToggle.Scale = 0.05f + 0.05f * disp;
         //uiToggle.Thickness = hovering ? 0.2f : (isOn ? 0f : 0.6f);
         uiToggle.Thickness = isOn ? 0f + 0.2f * disp : 0.6f - 0.3f * disp;
     }
