@@ -1,8 +1,10 @@
 using Unity.Entities;
 using Unity.Collections;
+using Unity.Mathematics;
 using UnityEngine.InputSystem;
 using Latios;
 using Latios.Psyshock;
+using Unity.Transforms;
 
 [UpdateAfter(typeof(SingleClipSystem))]
 public partial class ConfiguratorMouseSystem : SubSystem
@@ -52,6 +54,19 @@ public partial class ConfiguratorMouseSystem : SubSystem
             }
         }
 
-        //SystemAPI.SetComponentEnabled<On>(uiSingleton.CurrentHover,!SystemAPI.IsComponentEnabled<On>(uiSingleton.CurrentHover));
+        if (mouse.leftButton.wasPressedThisFrame) {
+            if (SystemAPI.Exists(uiSingleton.CurrentHover)) {
+                SystemAPI.SetComponentEnabled<On>(uiSingleton.CurrentHover,!SystemAPI.IsComponentEnabled<On>(uiSingleton.CurrentHover));
+            }
+        }
+
+        if (mouse.leftButton.isPressed) {
+            float delta = mouse.delta.x.ReadValue();
+            quaternion deltaRotation = quaternion.RotateY(delta*-0.005f);
+
+            foreach (RefRW<Rotation> dollRotation in SystemAPI.Query<RefRW<Rotation>>().WithAll<Character>()) {
+                dollRotation.ValueRW.Value = math.mul(deltaRotation,dollRotation.ValueRO.Value);
+            }
+        }
     }
 }
