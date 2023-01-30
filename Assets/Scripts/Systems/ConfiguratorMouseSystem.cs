@@ -28,17 +28,25 @@ public partial class ConfiguratorMouseSystem : SubSystem
 
     protected override void OnUpdate()
     {
+        Dependency = Physics.BuildCollisionLayer(_query, this).ScheduleParallel(out var collisionLayer, Allocator.TempJob, Dependency);
+
         var mouse = Mouse.current;
         UISingleton uiSingleton = SystemAPI.GetComponent<UISingleton>(CheckedStateRef.SystemHandle);
-
-        var jobHandle = Physics.BuildCollisionLayer(_query, this).ScheduleParallel(out var collisionLayer, Allocator.TempJob);
-
-        jobHandle.Complete();
+        Entity currentHover = uiSingleton.CurrentHover;
 
         UnityEngine.Vector2 screenPosition = mouse.position.ReadValue();
+        float delta = mouse.delta.x.ReadValue();
+        quaternion deltaRotation = quaternion.RotateY(delta*-0.005f);
         UnityEngine.Ray ray = _camera.ScreenPointToRay(screenPosition);
 
-        Entity currentHover = uiSingleton.CurrentHover;
+        Dependency.Complete();
+
+        if (mouse.leftButton.isPressed) {
+            foreach (RefRW<Rotation> dollRotation in SystemAPI.Query<RefRW<Rotation>>().WithAll<Character>()) {
+                dollRotation.ValueRW.Value = math.mul(deltaRotation,dollRotation.ValueRO.Value);
+            }
+        }
+        
         bool didHit = Physics.Raycast(ray.origin, ray.GetPoint(_camera.farClipPlane), collisionLayer, out RaycastResult result, out LayerBodyInfo hit);
         if (didHit && hit.entity != currentHover) {
             //if we have moved from hovering over one target to another
@@ -57,15 +65,6 @@ public partial class ConfiguratorMouseSystem : SubSystem
         if (mouse.leftButton.wasPressedThisFrame) {
             if (SystemAPI.Exists(uiSingleton.CurrentHover)) {
                 SystemAPI.SetComponentEnabled<On>(uiSingleton.CurrentHover,!SystemAPI.IsComponentEnabled<On>(uiSingleton.CurrentHover));
-            }
-        }
-
-        if (mouse.leftButton.isPressed) {
-            float delta = mouse.delta.x.ReadValue();
-            quaternion deltaRotation = quaternion.RotateY(delta*-0.005f);
-
-            foreach (RefRW<Rotation> dollRotation in SystemAPI.Query<RefRW<Rotation>>().WithAll<Character>()) {
-                dollRotation.ValueRW.Value = math.mul(deltaRotation,dollRotation.ValueRO.Value);
             }
         }
     }
