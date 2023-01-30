@@ -40,7 +40,7 @@ partial struct UIToggleSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-
+        state.RequireForUpdate<Configurator>();
     }
 
     [BurstCompile]

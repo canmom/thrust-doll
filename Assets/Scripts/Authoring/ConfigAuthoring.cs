@@ -22,6 +22,7 @@ class ConfigBaker : Baker<ConfigAuthoring>
             Stiffness = authoring.StateSpringStiffness,
             Damping = authoring.StateSpringDamping
         });
+        AddComponent<Configurator>();
     }
 }
 

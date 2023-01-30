@@ -19,11 +19,13 @@ public partial class ConfiguratorMouseSystem : SubSystem
             _camera = UnityEngine.Camera.main;
         }
 
-        _query = new EntityQueryBuilder(Allocator.TempJob)
+        _query = new EntityQueryBuilder(Allocator.Temp)
             .WithAll<Collider, Upgrade>()
             .Build(this);
 
-        CheckedStateRef.EntityManager.AddComponent<UISingleton>(CheckedStateRef.SystemHandle);
+        EntityManager.AddComponent<UISingleton>(SystemHandle);
+
+        RequireForUpdate<Configurator>();
     }
 
     protected override void OnUpdate()

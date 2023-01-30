@@ -8,6 +8,11 @@ using Unity.Transforms;
 [UpdateBefore(typeof(TransformSystemGroup))]
 public partial class SingleClipSystem : SubSystem
 {
+    protected override void OnCreate()
+    {
+        RequireForUpdate<SingleClip>();
+    }
+
     protected override void OnUpdate()
     {
         float t = (float)SystemAPI.Time.ElapsedTime;
