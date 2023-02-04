@@ -33,7 +33,7 @@ public partial class ConfiguratorMouseSystem : SubSystem
         Dependency = Physics.BuildCollisionLayer(_query, this).ScheduleParallel(out var collisionLayer, Allocator.TempJob, Dependency);
 
         var mouse = Mouse.current;
-        UISingleton uiSingleton = SystemAPI.GetComponent<UISingleton>(CheckedStateRef.SystemHandle);
+        UISingleton uiSingleton = SystemAPI.GetComponent<UISingleton>(SystemHandle);
         Entity currentHover = uiSingleton.CurrentHover;
 
         UnityEngine.Vector2 screenPosition = mouse.position.ReadValue();
@@ -56,11 +56,11 @@ public partial class ConfiguratorMouseSystem : SubSystem
                 SystemAPI.SetComponentEnabled<Hovering>(currentHover,false);
             }
             SystemAPI.SetComponentEnabled<Hovering>(hit.entity,true);
-            SystemAPI.SetComponent<UISingleton>(CheckedStateRef.SystemHandle, new UISingleton { CurrentHover = hit.entity });
+            SystemAPI.SetComponent<UISingleton>(SystemHandle, new UISingleton { CurrentHover = hit.entity });
         } else if (!didHit) {
             if (SystemAPI.Exists(currentHover)) {
                 SystemAPI.SetComponentEnabled<Hovering>(currentHover,false);
-                SystemAPI.SetComponent<UISingleton>(CheckedStateRef.SystemHandle, new UISingleton { CurrentHover = Entity.Null });
+                SystemAPI.SetComponent<UISingleton>(SystemHandle, new UISingleton { CurrentHover = Entity.Null });
             }
         }
 
