@@ -1,8 +1,9 @@
 using Unity.Entities;
 using Unity.Mathematics;
 
-struct CameraController : IComponentData
+public struct CameraController : IComponentData
 {
-    public quaternion Orientation;
+    public float Pitch;
+    public float Yaw;
     public float Distance;
 }

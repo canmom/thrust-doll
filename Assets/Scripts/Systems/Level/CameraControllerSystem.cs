@@ -1,37 +1,39 @@
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Transforms;
 using Unity.Burst;
-using UnityEngine;
 
 [UpdateAfter(typeof(InputReadingSystem))]
-public partial class CameraControllerSystem : SystemBase
+[BurstCompile]
+partial struct CameraControllerSystem : ISystem
 {
-    private Camera _camera;
-
-    protected override void OnCreate()
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
     {
-        EntityManager.AddComponent<CameraController>(SystemHandle);
-        SystemAPI.SetComponent<CameraController>(SystemHandle, new CameraController { Orientation = quaternion.identity, Distance = 5f});
+        state.EntityManager.AddComponent<CameraController>(state.SystemHandle);
+        SystemAPI.SetComponent<CameraController>(state.SystemHandle, new CameraController { Pitch = 0f, Yaw = 0f, Distance = 5f});
 
-        _camera = Camera.main;
+        state.RequireForUpdate<Intent>();
+        state.RequireForUpdate<CameraPivot>();
     }
 
-    protected override void OnDestroy()
+    [BurstCompile]
+    public void OnDestroy(ref SystemState state)
     {
     }
 
-    protected override void OnUpdate()
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
     {
         float2 intendedRotation = SystemAPI.GetSingleton<Intent>().Rotate;
 
-        quaternion rotation = quaternion.EulerXZY(intendedRotation.y, intendedRotation.x, 0f);
+        RefRW<CameraController> controller = SystemAPI.GetComponentRW<CameraController>(state.SystemHandle);
+        RefRW<Rotation> pivot = SystemAPI.GetComponentLookup<Rotation>().GetRefRW(SystemAPI.GetSingletonEntity<CameraPivot>(), false);
 
-        RefRW<CameraController> controller = SystemAPI.GetComponentRW<CameraController>(SystemHandle);
+        controller.ValueRW.Yaw += intendedRotation.x;
+        controller.ValueRW.Pitch -= intendedRotation.y;
+        controller.ValueRW.Pitch = math.clamp(controller.ValueRO.Pitch, -math.PI/2, math.PI/2);
 
-        quaternion newOrientation = math.mul(rotation, controller.ValueRO.Orientation);
-
-        controller.ValueRW.Orientation = newOrientation;
-
-        _camera.transform.localRotation = newOrientation;
+        pivot.ValueRW.Value = quaternion.EulerXYZ(controller.ValueRO.Pitch,controller.ValueRO.Yaw,0f);
     }
 }
