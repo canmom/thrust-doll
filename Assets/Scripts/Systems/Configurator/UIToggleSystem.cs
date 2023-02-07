@@ -14,7 +14,7 @@ partial struct UIToggleJob : IJobEntity
     [ReadOnly] public ComponentLookup<On> OnLookup;
     [ReadOnly] public ComponentLookup<LocalToWorld> TranslationLookup;
 
-    void Execute([ChunkIndexInQuery] int chunkIndex, ref UIToggleAspect uiToggle)
+    void Execute(ref UIToggleAspect uiToggle)
     {
         bool hovering = HoveringLookup.IsComponentEnabled(uiToggle.BelongsTo);
         bool isOn = OnLookup.IsComponentEnabled(uiToggle.BelongsTo);

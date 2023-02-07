@@ -39,7 +39,7 @@ partial struct StateSpringJob : IJobEntity
     public float Stiffness;
     public float Damping;
 
-    void Execute([ChunkIndexInQuery] int chunkIndex, ref StateSpring spring) {
+    void Execute(ref StateSpring spring) {
         //semi-implicit Euler integration
         spring.Velocity += ((Stiffness * (spring.Target - spring.Displacement)) - (Damping * spring.Velocity)) * DeltaTime;
         spring.Displacement += spring.Velocity * DeltaTime;
