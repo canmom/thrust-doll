@@ -6,13 +6,13 @@ using Unity.Collections;
 
 [BurstCompile]
 public partial struct StatusCountdownJob<T> : IJobChunk
-    where T : struct, IComponentData, IStatus
+    where T : unmanaged, IComponentData, IStatus
 {
     public float DeltaTime;
     public EntityCommandBuffer.ParallelWriter ECB;
 
-    ComponentTypeHandle<T> StatusHandle;
-    EntityTypeHandle EntityHandle;
+    public ComponentTypeHandle<T> StatusHandle;
+    public EntityTypeHandle EntityHandle;
 
     public void Execute(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask) {
         //not usable with enableable components
