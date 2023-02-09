@@ -1,15 +1,10 @@
 using Unity.Entities;
 using Unity.Burst;
+using Unity.Jobs;
 
-[assembly: Unity.Jobs.RegisterGenericJobType(typeof(StatusCountdownJob<Thrust>))]
 [BurstCompile]
 partial struct StatusTickSystem : ISystem
 {
-    EntityTypeHandle entityHandle;
-
-    ComponentTypeHandle<Thrust> thrustHandle;
-    ComponentTypeHandle<ThrustCooldown> thrustCooldownHandle;
-
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -25,10 +20,10 @@ partial struct StatusTickSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        entityHandle = SystemAPI.GetEntityTypeHandle();
+        EntityTypeHandle entityHandle = SystemAPI.GetEntityTypeHandle();
 
-        thrustHandle = SystemAPI.GetComponentTypeHandle<Thrust>(false);
-        thrustCooldownHandle = SystemAPI.GetComponentTypeHandle<ThrustCooldown>(false);
+        ComponentTypeHandle<Thrust> thrustHandle = SystemAPI.GetComponentTypeHandle<Thrust>(false);
+        ComponentTypeHandle<ThrustCooldown> thrustCooldownHandle = SystemAPI.GetComponentTypeHandle<ThrustCooldown>(false);
 
         float deltaTime = SystemAPI.Time.DeltaTime;
 
@@ -45,14 +40,34 @@ partial struct StatusTickSystem : ISystem
             };
         state.Dependency = thrustJob.Schedule(thrustQuery, state.Dependency);
 
-        var thrustCooldownJob = new StatusCountdownJob<Thrust>
+        var thrustCooldownJob = new StatusCountdownJob<ThrustCooldown>
             {    DeltaTime = deltaTime
             ,          ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
-            , StatusHandle = thrustHandle
+            , StatusHandle = thrustCooldownHandle
             , EntityHandle = entityHandle
             };
         state.Dependency = thrustCooldownJob.Schedule(thrustCooldownQuery, state.Dependency);
-        // var job2 = new StatusCountdownJob<ThrustCooldown> { DeltaTime = deltaTime };
-        // job2.Schedule();
     }
+
+    // [BurstCompile]
+    // void scheduleJob<T>(ref SystemState state)
+    //     where T: unmanaged, IComponentData, IStatus
+    // {
+    //     ComponentTypeHandle<T> statusHandle = SystemAPI.GetComponentTypeHandle<T>(false);
+    //     EntityTypeHandle entityHandle = SystemAPI.GetEntityTypeHandle();
+
+    //     float deltaTime = SystemAPI.Time.DeltaTime;
+
+    //     EntityQuery statusQuery = SystemAPI.QueryBuilder().WithAll<T>().Build();
+
+    //     var ecbSystem = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+
+    //     var job = new StatusCountdownJob<T>
+    //         {    DeltaTime = deltaTime
+    //         ,          ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+    //         , StatusHandle = statusHandle
+    //         , EntityHandle = entityHandle
+    //         };
+    //     state.Dependency = job.ScheduleParallel(statusQuery, state.Dependency);
+    // }
 }
