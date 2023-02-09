@@ -19,15 +19,16 @@ partial struct StateSpringSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var config = SystemAPI.GetSingleton<StateSpringConfig>();
+        var config =
+            SystemAPI
+            .GetSingleton<StateSpringConfig>();
 
         var stateSpringJob = new StateSpringJob
-        {
-            // Time cannot be directly accessed from a job, so DeltaTime has to be passed in as a parameter.
-            DeltaTime = SystemAPI.Time.DeltaTime,
-            Stiffness = config.Stiffness,
-            Damping = config.Damping
-        };
+            { DeltaTime = SystemAPI.Time.DeltaTime
+            , Stiffness = config.Stiffness
+            , Damping = config.Damping
+            };
+
         stateSpringJob.ScheduleParallel();
     }
 }

@@ -6,7 +6,8 @@ partial class InputReadingSystem : SystemBase
 {
     protected override void OnCreate()
     {
-        EntityManager.AddComponent<Intent>(SystemHandle);
+        EntityManager
+            .AddComponent<Intent>(SystemHandle);
         UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.Locked;
     }
 
@@ -20,6 +21,7 @@ partial class InputReadingSystem : SystemBase
 
         Intent intent = new Intent { Rotate = delta, Thrust = thrust };
 
-        SystemAPI.SetComponent<Intent>(SystemHandle, intent);
+        SystemAPI
+            .SetComponent<Intent>(SystemHandle, intent);
     }
 }

@@ -26,29 +26,38 @@ partial struct ThrustStartSystem : ISystem
     {
         if (SystemAPI.GetSingleton<Intent>().Thrust)
         {   
-            Entity player = SystemAPI.GetSingletonEntity<Character>();
+            Entity player =
+                SystemAPI
+                    .GetSingletonEntity<Character>();
 
             if (!SystemAPI.HasComponent<ThrustCooldown>(player))
             {
-                quaternion rotation = SystemAPI.GetComponent<Rotation>(SystemAPI.GetSingletonEntity<CameraPivot>()).Value;
+                quaternion rotation =
+                    SystemAPI
+                        .GetComponent<Rotation>
+                            ( SystemAPI
+                                .GetSingletonEntity<CameraPivot>()
+                            )
+                        .Value;
 
                 float3 acceleration = math.mul(rotation,new float3(0f, 0f, 10f ));
 
-                EntityCommandBuffer ecb = SystemAPI.GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
-                    .CreateCommandBuffer(state.WorldUnmanaged);
+                EntityCommandBuffer ecb =
+                    SystemAPI
+                        .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
+                        .CreateCommandBuffer(state.WorldUnmanaged);
 
                 ecb.AddComponent(player,
                     new Thrust
-                    {
-                        TimeRemaining = 0.5f,
-                        Acceleration = acceleration
-                    });
+                        { TimeRemaining = 0.5f
+                        , Acceleration = acceleration
+                        });
 
                 ecb.AddComponent(player,
-                    new ThrustCooldown {
-                        TimeRemaining = 5f,
-                        InverseDuration = 0.2f
-                    });
+                    new ThrustCooldown
+                        { TimeRemaining = 5f
+                        , InverseDuration = 0.2f
+                        });
             }
         }
     }

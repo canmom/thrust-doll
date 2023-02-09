@@ -23,9 +23,18 @@ partial struct CameraPivotTranslationSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        ComponentLookup<Translation> translationLookup = SystemAPI.GetComponentLookup<Translation>(false);
-        Entity characterEntity = SystemAPI.GetSingletonEntity<Character>();
-        Entity pivotEntity = SystemAPI.GetSingletonEntity<CameraPivot>();
+        ComponentLookup<Translation> translationLookup =
+            SystemAPI
+                .GetComponentLookup<Translation>(false);
+
+        Entity characterEntity =
+            SystemAPI
+                .GetSingletonEntity<Character>();
+
+        Entity pivotEntity =
+            SystemAPI
+                .GetSingletonEntity<CameraPivot>();
+
 
         var job = new CameraPivotTranslationJob
             { TranslationLookup = translationLookup

@@ -13,9 +13,13 @@ partial class CameraUpdateSystem : SystemBase
     }
 
     protected override void OnUpdate() {
-        Entity cameraTransform = SystemAPI.GetSingletonEntity<CameraTransform>();
+        Entity cameraTransform =
+            SystemAPI
+                .GetSingletonEntity<CameraTransform>();
 
-        LocalToWorld transform = SystemAPI.GetComponent<LocalToWorld>(cameraTransform);
+        LocalToWorld transform =
+            SystemAPI
+                .GetComponent<LocalToWorld>(cameraTransform);
 
         _camera.transform.position = transform.Position;
         _camera.transform.rotation = transform.Rotation;

@@ -21,11 +21,15 @@ partial struct VelocitySystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        float deltaTime = SystemAPI.Time.DeltaTime;
+        float deltaTime =
+            SystemAPI
+                .Time
+                .DeltaTime;
 
-        new VelocityJob {
-            DeltaTime = deltaTime
-        }.ScheduleParallel();
+        new VelocityJob 
+            { DeltaTime = deltaTime
+            }
+            .ScheduleParallel();
     }
 }
 

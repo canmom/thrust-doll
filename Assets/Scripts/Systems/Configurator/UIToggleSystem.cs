@@ -16,21 +16,46 @@ partial struct UIToggleJob : IJobEntity
 
     void Execute(ref UIToggleAspect uiToggle)
     {
-        bool hovering = HoveringLookup.IsComponentEnabled(uiToggle.BelongsTo);
-        bool isOn = OnLookup.IsComponentEnabled(uiToggle.BelongsTo);
+        bool hovering =
+            HoveringLookup
+                .IsComponentEnabled
+                    ( uiToggle.BelongsTo
+                    );
+        bool isOn =
+            OnLookup
+                .IsComponentEnabled
+                    ( uiToggle.BelongsTo
+                    );
 
-        uiToggle.Translation = TranslationLookup.GetRefRO(uiToggle.BelongsTo).ValueRO.Value.c3.xyz;
+        uiToggle.Translation =
+            TranslationLookup
+                .GetRefRO(uiToggle.BelongsTo)
+                .ValueRO
+                .Value
+                .c3
+                .xyz;
 
         //set the target for animation
-        uiToggle.StateTarget = hovering ? 1f : 0f;
+        uiToggle.StateTarget =
+            hovering
+                ? 1f
+                : 0f;
 
         //displacement for use in LERP; 0 to 1 with overshoots possible
-        float disp = uiToggle.StateDisplacement;
+        float disp =
+            uiToggle.StateDisplacement;
 
-        uiToggle.Opacity = isOn ? 0.6f : 0f;
-        uiToggle.Scale = 0.05f + 0.05f * disp;
+        uiToggle.Opacity =
+            isOn
+                ? 0.6f 
+                : 0f;
+        uiToggle.Scale =
+            0.05f + 0.05f * disp;
         //uiToggle.Thickness = hovering ? 0.2f : (isOn ? 0f : 0.6f);
-        uiToggle.Thickness = isOn ? 0f + 0.2f * disp : 0.6f - 0.3f * disp;
+        uiToggle.Thickness =
+            isOn
+                ? 0f + 0.2f * disp
+                : 0.6f - 0.3f * disp;
     }
 }
 
@@ -51,13 +76,23 @@ partial struct UIToggleSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var uiToggleJob = new UIToggleJob
-        {
-            DeltaTime = SystemAPI.Time.DeltaTime,
-            HoveringLookup = SystemAPI.GetComponentLookup<Hovering>(true),
-            OnLookup = SystemAPI.GetComponentLookup<On>(true),
-            TranslationLookup = SystemAPI.GetComponentLookup<LocalToWorld>(true)
-        };
-        uiToggleJob.ScheduleParallel();
+        var uiToggleJob =
+            new UIToggleJob
+                { DeltaTime =
+                    SystemAPI
+                        .Time
+                        .DeltaTime
+                , HoveringLookup =
+                    SystemAPI
+                        .GetComponentLookup<Hovering>(true)
+                , OnLookup =
+                    SystemAPI
+                        .GetComponentLookup<On>(true)
+                , TranslationLookup =
+                    SystemAPI
+                        .GetComponentLookup<LocalToWorld>(true)
+                };
+        uiToggleJob
+        .ScheduleParallel();
     }
 }

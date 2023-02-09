@@ -20,7 +20,10 @@ partial struct ThrustAccelerationSystem : ISystem
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        float deltaTime = SystemAPI.Time.DeltaTime;
+        float deltaTime =
+            SystemAPI
+                .Time
+                .DeltaTime;
 
         new ThrustAccelerationJob { DeltaTime = deltaTime }
             .Schedule();
