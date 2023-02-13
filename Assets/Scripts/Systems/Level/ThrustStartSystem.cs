@@ -3,6 +3,7 @@ using Unity.Burst;
 using Unity.Transforms;
 using Unity.Mathematics;
 
+[UpdateInGroup(typeof(LevelSystemGroup))]
 [UpdateAfter(typeof(CameraControllerSystem))]
 [BurstCompile]
 partial struct ThrustStartSystem : ISystem

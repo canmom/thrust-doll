@@ -6,6 +6,7 @@ using Latios;
 using Latios.Psyshock;
 using Unity.Transforms;
 
+[UpdateInGroup(typeof(ConfiguratorSystemGroup))]
 [UpdateAfter(typeof(SingleClipSystem))]
 public partial class ConfiguratorMouseSystem : SubSystem
 {
@@ -24,8 +25,6 @@ public partial class ConfiguratorMouseSystem : SubSystem
             .Build(this);
 
         EntityManager.AddComponent<UISingleton>(SystemHandle);
-
-        RequireForUpdate<Configurator>();
     }
 
     protected override void OnUpdate()

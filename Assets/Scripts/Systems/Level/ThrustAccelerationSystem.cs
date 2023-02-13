@@ -1,6 +1,7 @@
 using Unity.Entities;
 using Unity.Burst;
 
+[UpdateInGroup(typeof(LevelSystemGroup))]
 [UpdateBefore(typeof(VelocitySystem))]
 [BurstCompile]
 partial struct ThrustAccelerationSystem : ISystem

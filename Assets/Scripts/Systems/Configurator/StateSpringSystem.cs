@@ -2,6 +2,7 @@ using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 
+[UpdateInGroup(typeof(ConfiguratorSystemGroup))]
 [BurstCompile]
 partial struct StateSpringSystem : ISystem
 {

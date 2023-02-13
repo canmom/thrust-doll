@@ -2,7 +2,7 @@ using Unity.Entities;
 using Unity.Transforms;
 using Unity.Burst;
 
-[UpdateBefore(typeof(TransformSystemGroup))]
+[UpdateInGroup(typeof(LevelSystemGroup))]
 [BurstCompile]
 partial struct VelocitySystem : ISystem
 {

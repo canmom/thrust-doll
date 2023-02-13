@@ -3,6 +3,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using Unity.Burst;
 
+[UpdateInGroup(typeof(LevelSystemGroup))]
 [UpdateAfter(typeof(InputReadingSystem))]
 [BurstCompile]
 partial struct CameraControllerSystem : ISystem

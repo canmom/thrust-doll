@@ -5,8 +5,6 @@ using Unity.Transforms;
 using Unity.Collections;
 
 [BurstCompile]
-//[UpdateAfter(typeof(MouseHandlingSystem))]
-[UpdateAfter(typeof(SingleClipSystem))]
 partial struct UIToggleJob : IJobEntity
 {
     public float DeltaTime;
@@ -59,13 +57,14 @@ partial struct UIToggleJob : IJobEntity
     }
 }
 
+[UpdateInGroup(typeof(ConfiguratorSystemGroup))]
+[UpdateAfter(typeof(SingleClipSystem))]
 [BurstCompile]
 partial struct UIToggleSystem : ISystem
 {
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-        state.RequireForUpdate<Configurator>();
     }
 
     [BurstCompile]

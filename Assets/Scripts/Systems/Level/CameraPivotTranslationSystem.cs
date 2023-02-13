@@ -3,8 +3,8 @@ using Unity.Transforms;
 using Unity.Jobs;
 using Unity.Burst;
 
+[UpdateInGroup(typeof(LevelSystemGroup))]
 [UpdateAfter(typeof(VelocitySystem))]
-[UpdateBefore(typeof(TransformSystemGroup))]
 [BurstCompile]
 partial struct CameraPivotTranslationSystem : ISystem
 {

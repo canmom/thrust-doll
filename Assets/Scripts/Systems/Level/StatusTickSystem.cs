@@ -3,6 +3,7 @@ using Unity.Burst;
 using Unity.Jobs;
 
 [BurstCompile]
+[UpdateInGroup(typeof(LevelSystemGroup))]
 partial struct StatusTickSystem : ISystem
 {
     [BurstCompile]
@@ -45,11 +46,14 @@ partial struct StatusTickSystem : ISystem
 
         var ecbSystem =
             SystemAPI
-            .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
+                .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
         var thrustJob = new StatusCountdownJob<Thrust>
-            {    DeltaTime = deltaTime
-            ,          ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+            { DeltaTime = deltaTime
+            , ECB =
+                ecbSystem
+                    .CreateCommandBuffer(state.WorldUnmanaged)
+                    .AsParallelWriter()
             , StatusHandle = thrustHandle
             , EntityHandle = entityHandle
             };
@@ -61,8 +65,11 @@ partial struct StatusTickSystem : ISystem
                     );
 
         var thrustCooldownJob = new StatusCountdownJob<ThrustCooldown>
-            {    DeltaTime = deltaTime
-            ,          ECB = ecbSystem.CreateCommandBuffer(state.WorldUnmanaged).AsParallelWriter()
+            { DeltaTime = deltaTime
+            , ECB =
+                ecbSystem
+                    .CreateCommandBuffer(state.WorldUnmanaged)
+                    .AsParallelWriter()
             , StatusHandle = thrustCooldownHandle
             , EntityHandle = entityHandle
             };

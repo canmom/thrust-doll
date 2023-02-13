@@ -5,7 +5,8 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 
-[UpdateBefore(typeof(TransformSystemGroup))]
+
+[UpdateInGroup(typeof(ConfiguratorSystemGroup))]
 public partial class SingleClipSystem : SubSystem
 {
     protected override void OnCreate()

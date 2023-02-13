@@ -2,6 +2,7 @@ using Unity.Entities;
 using UnityEngine.InputSystem;
 using Unity.Mathematics;
 
+[UpdateInGroup(typeof(LevelSystemGroup))]
 partial class InputReadingSystem : SystemBase
 {
     protected override void OnCreate()
