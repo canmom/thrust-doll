@@ -5,6 +5,7 @@ using Unity.Mathematics;
 
 [UpdateInGroup(typeof(LevelSystemGroup))]
 [UpdateAfter(typeof(CameraControllerSystem))]
+[UpdateBefore(typeof(RotationSpringSystem))]
 [BurstCompile]
 partial struct ThrustStartSystem : ISystem
 {
@@ -41,26 +42,50 @@ partial struct ThrustStartSystem : ISystem
                             )
                         .Value;
 
-                float3 acceleration = math.mul(rotation,new float3(0f, 0f, 10f ));
-
-                EntityCommandBuffer ecb =
+                EntityCommandBuffer.ParallelWriter ecb =
                     SystemAPI
                         .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
-                        .CreateCommandBuffer(state.WorldUnmanaged);
+                        .CreateCommandBuffer(state.WorldUnmanaged)
+                        .AsParallelWriter();
 
-                ecb.AddComponent(player,
-                    new Thrust
-                        { TimeRemaining = 0.5f
-                        , Acceleration = acceleration
-                        });
-
-                ecb.AddComponent(player,
-                    new ThrustCooldown
-                        { TimeRemaining = 5f
-                        , InverseDuration = 0.2f
-                        });
+                new ThrustStartJob
+                    { CameraRotation = rotation
+                    , ECB = ecb
+                    }
+                    .Schedule();
             }
         }
     }
 }
 
+[WithAll(typeof(Character))]
+partial struct ThrustStartJob : IJobEntity
+{
+    public quaternion CameraRotation;
+    public EntityCommandBuffer.ParallelWriter ECB;
+
+    void Execute([ChunkIndexInQuery] int chunkIndex, Entity player, ref RotationTarget target)
+    {
+        float3 acceleration = math.mul(CameraRotation,new float3(0f, 0f, 10f ));
+
+        ECB.AddComponent
+            ( chunkIndex
+            , player
+            , new Thrust
+                { TimeRemaining = 0.5f
+                , Acceleration = acceleration
+                }
+            );
+
+        ECB.AddComponent
+            ( chunkIndex
+            , player
+            , new ThrustCooldown
+                { TimeRemaining = 5f
+                , InverseDuration = 0.2f
+                }
+            );
+
+        target.Target = math.normalize(acceleration);
+    }
+}

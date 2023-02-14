@@ -745,6 +745,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DragCoefficient: 0.0005
+  RotationSpringStiffness: 20
+  RotationSpringDamping: 6
 --- !u!1 &1152384099
 GameObject:
   m_ObjectHideFlags: 0
@@ -917,6 +919,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: doll-with-grapple
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4b274d7b7e669498c9ba15a645ef0f6a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
