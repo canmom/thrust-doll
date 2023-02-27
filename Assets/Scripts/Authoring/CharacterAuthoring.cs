@@ -28,16 +28,16 @@ class CharacterBaker : Baker<CharacterAuthoring>
                 { Coefficient = authoring.DragCoefficient
                 }
             );
-        AddComponent
-            (new DampedRotationSpring
-                { Stiffness = authoring.RotationSpringStiffness
-                , Damping = authoring.RotationSpringDamping
-                }
-            );
-        AddComponent
-            (new RotationTarget
-                { Target = new float3(0f, 0f, 1f)
-                }
-            );
+        // AddComponent
+        //     (new DampedRotationSpring
+        //         { Stiffness = authoring.RotationSpringStiffness
+        //         , Damping = authoring.RotationSpringDamping
+        //         }
+        //     );
+        // AddComponent
+        //     (new RotationTarget
+        //         { Target = new float3(0f, 0f, 1f)
+        //         }
+        //     );
     }
 }

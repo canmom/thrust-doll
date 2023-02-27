@@ -42,6 +42,11 @@ partial struct ThrustStartSystem : ISystem
                             )
                         .Value;
 
+                float thrustForce =
+                    SystemAPI
+                        .GetSingleton<Level>()
+                        .ThrustForce;
+
                 EntityCommandBuffer.ParallelWriter ecb =
                     SystemAPI
                         .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
@@ -51,6 +56,8 @@ partial struct ThrustStartSystem : ISystem
                 new ThrustStartJob
                     { CameraRotation = rotation
                     , ECB = ecb
+                    , Time = SystemAPI.Time.ElapsedTime
+                    , ThrustForce = thrustForce
                     }
                     .Schedule();
             }
@@ -63,16 +70,18 @@ partial struct ThrustStartJob : IJobEntity
 {
     public quaternion CameraRotation;
     public EntityCommandBuffer.ParallelWriter ECB;
+    public double Time;
+    public float ThrustForce;
 
-    void Execute([ChunkIndexInQuery] int chunkIndex, Entity player, ref RotationTarget target)
+    void Execute([ChunkIndexInQuery] int chunkIndex, Entity player, in Rotation rotation)
     {
-        float3 acceleration = math.mul(CameraRotation,new float3(0f, 0f, 10f ));
+        float3 acceleration = math.mul(CameraRotation,new float3(0f, 0f, ThrustForce ));
 
         ECB.AddComponent
             ( chunkIndex
             , player
             , new Thrust
-                { TimeRemaining = 0.5f
+                { TimeCreated = Time
                 , Acceleration = acceleration
                 }
             );
@@ -80,12 +89,22 @@ partial struct ThrustStartJob : IJobEntity
         ECB.AddComponent
             ( chunkIndex
             , player
-            , new ThrustCooldown
-                { TimeRemaining = 5f
-                , InverseDuration = 0.2f
+            , new ThrustWindup
+                { TimeCreated = Time
+                , InitialRotation = rotation.Value
+                , TargetRotation = CameraRotation
                 }
             );
 
-        target.Target = math.normalize(acceleration);
+        ECB.AddComponent
+            ( chunkIndex
+            , player
+            , new ThrustCooldown
+                { TimeCreated = Time
+                , InverseDuration = 0.2
+                }
+            );
+
+        //target.Target = math.normalize(acceleration);
     }
 }

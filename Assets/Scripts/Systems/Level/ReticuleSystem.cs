@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 [BurstCompile]
 [UpdateInGroup(typeof(LevelSystemGroup))]
-[UpdateAfter(typeof(StatusTickSystem))]
+[UpdateAfter(typeof(StatusTransitionSystem))]
 partial struct ReticuleSystem : ISystem
 {
     [BurstCompile]
@@ -33,6 +33,7 @@ partial struct ReticuleSystem : ISystem
         new ReticuleJob
             { ThrustCooldownLookup = thrustCooldownLookup
             , PlayerEntity = playerEntity
+            , Time = SystemAPI.Time.ElapsedTime
             }.Schedule();
     }
 }
@@ -41,15 +42,16 @@ partial struct ReticuleJob : IJobEntity
 {
     public ComponentLookup<ThrustCooldown> ThrustCooldownLookup;
     public Entity PlayerEntity;
+    public double Time;
 
     void Execute(ref ReticuleCooldownRing cooldownRing, ref ReticuleColour dotColour)
     {
         if ( ThrustCooldownLookup.TryGetComponent(PlayerEntity, out ThrustCooldown cooldown))
         {
-            cooldownRing.Amount = cooldown.TimeRemaining * cooldown.InverseDuration;
+            cooldownRing.Amount = (float) ((Time - cooldown.TimeCreated) * cooldown.InverseDuration);
             dotColour.Colour = new float4(1f, 0f, 0f, 0.5f);
         } else {
-            cooldownRing.Amount = 0f;
+            cooldownRing.Amount = 1f;
             dotColour.Colour = new float4(1f);
         }
     }

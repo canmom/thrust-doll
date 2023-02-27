@@ -41,6 +41,6 @@ partial struct DampingJob : IJobEntity
 
     void Execute(ref Velocity velocity, in Drag drag)
     {
-        velocity.Value -= drag.Coefficient * velocity.Value * math.length(velocity.Value);
+        velocity.Value -= drag.Coefficient * velocity.Value * math.length(velocity.Value) * DeltaTime;
     }
 }

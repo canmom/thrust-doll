@@ -32,6 +32,7 @@ partial struct ThrustAccelerationSystem : ISystem
 }
 
 [BurstCompile]
+[WithAll(typeof(ThrustActive))]
 public partial struct ThrustAccelerationJob : IJobEntity
 {
     public float DeltaTime;
