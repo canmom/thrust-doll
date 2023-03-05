@@ -1,5 +1,6 @@
 using Unity.Entities;
 using Unity.Transforms;
+using Latios;
 
 [UpdateBefore(typeof(TransformSystemGroup))]
 public class ConfiguratorSystemGroup : ComponentSystemGroup
@@ -12,11 +13,10 @@ public class ConfiguratorSystemGroup : ComponentSystemGroup
 }
 
 [UpdateBefore(typeof(TransformSystemGroup))]
-public class LevelSystemGroup : ComponentSystemGroup
+public class LevelSystemGroup : SuperSystem
 {
-    protected override void OnCreate()
+    protected override void CreateSystems()
     {
         RequireForUpdate<Level>();
-        base.OnCreate();
     }
 }
