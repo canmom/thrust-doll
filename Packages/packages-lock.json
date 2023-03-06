@@ -1,15 +1,14 @@
 {
   "dependencies": {
     "com.latios.latiosframework": {
-      "version": "0.6.4",
+      "version": "file:com.latios.latiosframework@0.6.4",
       "depth": 0,
-      "source": "registry",
+      "source": "embedded",
       "dependencies": {
         "com.unity.entities": "1.0.0-pre.15",
         "com.unity.audio.dspgraph": "0.1.0-preview.22",
         "com.unity.entities.graphics": "1.0.0-pre.15"
-      },
-      "url": "https://package.openupm.com"
+      }
     },
     "com.unity.ai.navigation": {
       "version": "1.1.1",
