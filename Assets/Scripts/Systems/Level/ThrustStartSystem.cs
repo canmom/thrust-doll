@@ -42,10 +42,9 @@ partial struct ThrustStartSystem : ISystem
                             )
                         .Value;
 
-                float thrustForce =
+                Level level =
                     SystemAPI
-                        .GetSingleton<Level>()
-                        .ThrustForce;
+                        .GetSingleton<Level>();
 
                 EntityCommandBuffer.ParallelWriter ecb =
                     SystemAPI
@@ -57,7 +56,11 @@ partial struct ThrustStartSystem : ISystem
                     { CameraRotation = rotation
                     , ECB = ecb
                     , Time = SystemAPI.Time.ElapsedTime
-                    , ThrustForce = thrustForce
+                    , ThrustForce = level.ThrustForce
+                    , InverseThrustCooldown = 1f/level.ThrustCooldown
+                    , TurnSmallStartupEnd = level.TurnSmallStartup
+                    , TurnSmallRecoveryStart = level.ThrustWindup 
+                    , TurnSmallAnimationEnd = level.ThrustWindup + level.TurnSmallRecovery
                     }
                     .Schedule();
             }
@@ -72,10 +75,22 @@ partial struct ThrustStartJob : IJobEntity
     public EntityCommandBuffer.ParallelWriter ECB;
     public double Time;
     public float ThrustForce;
+    public float InverseThrustCooldown;
+    public float TurnSmallStartupEnd;
+    public float TurnSmallRecoveryStart;
+    public float TurnSmallAnimationEnd;
 
     void Execute([ChunkIndexInQuery] int chunkIndex, Entity player, in Rotation rotation)
     {
-        float3 acceleration = math.mul(CameraRotation,new float3(0f, 0f, ThrustForce ));
+        float3 acceleration =
+            math.mul
+                ( CameraRotation
+                , new float3
+                    ( 0f
+                    , 0f
+                    , ThrustForce
+                    )
+                );
 
         ECB.AddComponent
             ( chunkIndex
@@ -101,7 +116,19 @@ partial struct ThrustStartJob : IJobEntity
             , player
             , new ThrustCooldown
                 { TimeCreated = Time
-                , InverseDuration = 0.2
+                , InverseDuration = InverseThrustCooldown
+                }
+            );
+
+        ECB.AddComponent
+            ( chunkIndex
+            , player
+            , new TransientAnimationClip
+                { Index = AnimationClipIndex.TurnUpSmall
+                , TimeCreated = (float) Time
+                , StartupEnd = TurnSmallStartupEnd
+                , RecoveryStart = TurnSmallRecoveryStart
+                , AnimationEnd = TurnSmallAnimationEnd
                 }
             );
 
