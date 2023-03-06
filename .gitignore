@@ -88,3 +88,9 @@ Assets/SceneDependencyCache/*
 Assets/Fonts/**/*.ttf
 Assets/Fonts/**/*.otf
 Assets/Fonts/**/*.asset
+
+# Crash logs shouldn't go in the repo
+mono_crash.*.*.json
+
+# Don't commit the modified Latios Framework
+Packages/com.latios.latiosframework@*/*
