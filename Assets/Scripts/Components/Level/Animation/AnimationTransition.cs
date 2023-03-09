@@ -2,8 +2,11 @@ using Unity.Entities;
 
 partial struct AnimationTransition : IComponentData
 {
-    public AnimationClipIndex NextAnimation;
+    public AnimationClipIndex NextIndex;
+
+    public float Start;
+
+    public bool Looping;
 
     public float Duration;
-    public float TimeCreated;
 }

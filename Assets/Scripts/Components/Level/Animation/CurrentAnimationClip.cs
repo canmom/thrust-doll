@@ -1,6 +1,10 @@
 using Unity.Entities;
 
-partial struct CurrentAnimationClilp : IComponentData
+partial struct CurrentAnimationClip : IComponentData
 {
     public AnimationClipIndex Index;
+
+    public float Start;
+
+    public bool Looping;
 }

@@ -10,8 +10,9 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class AnimationClipsAuthoring : MonoBehaviour
 {
-    public AnimationClip FlightClip;
-    public AnimationClip TurnUpSmallClip;
+    public AnimationClip Flight;
+    public AnimationClip TurnUpSmall;
+    public AnimationClip Thrust;
 }
 
 struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
@@ -21,16 +22,44 @@ struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
     public bool Bake(AnimationClipsAuthoring authoring, IBaker baker)
     {
         baker.AddComponent<AnimationClips>();
-        var clips = new NativeArray<SkeletonClipConfig>(2, Allocator.Temp);
-        clips[0]  = new SkeletonClipConfig { clip = authoring.FlightClip, settings = SkeletonClipCompressionSettings.kDefaultSettings };
-        clips[1]  = new SkeletonClipConfig { clip = authoring.TurnUpSmallClip, settings = SkeletonClipCompressionSettings.kDefaultSettings };
-        blob      = baker.RequestCreateBlobAsset(baker.GetComponent<Animator>(), clips);
+
+        var clips =
+            new NativeArray<SkeletonClipConfig>
+                ( System.Enum
+                    .GetNames(typeof(AnimationClipIndex))
+                    .Length
+                , Allocator.Temp
+                );
+
+        clips[(int) AnimationClipIndex.LevelFlight] =
+            new SkeletonClipConfig
+                { clip = authoring.Flight
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.TurnUpSmall] =
+            new SkeletonClipConfig
+                { clip = authoring.TurnUpSmall
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.Thrust] =
+            new SkeletonClipConfig
+                { clip = authoring.Thrust
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+
+        blob = baker.RequestCreateBlobAsset(baker.GetComponent<Animator>(), clips);
         return true;
     }
 
     public void PostProcessBlobRequests(EntityManager entityManager, Entity entity)
     {
-        entityManager.SetComponentData(entity, new AnimationClips { blob = blob.Resolve(entityManager) });
+        entityManager
+            .SetComponentData
+                ( entity
+                , new AnimationClips
+                    { blob = blob.Resolve(entityManager)
+                    }
+                );
     }
 }
 

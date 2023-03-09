@@ -9,4 +9,5 @@ public enum AnimationClipIndex
 , TurnLeftLarge = 4+3
 , TurnRightLarge = 4+4
 , Thrust = 8+1
+, EndThurst = 8+2
 }
