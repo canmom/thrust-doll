@@ -58,9 +58,7 @@ partial struct ThrustStartSystem : ISystem
                     , Time = SystemAPI.Time.ElapsedTime
                     , ThrustForce = level.ThrustForce
                     , InverseThrustCooldown = 1f/level.ThrustCooldown
-                    , TurnSmallStartupEnd = level.TurnSmallStartup
-                    , TurnSmallRecoveryStart = level.ThrustWindup 
-                    , TurnSmallAnimationEnd = level.ThrustWindup + level.TurnSmallRecovery
+                    , TurnSmallTransitionIn = level.TurnSmallTransitionIn
                     }
                     .Schedule();
             }
@@ -76,9 +74,7 @@ partial struct ThrustStartJob : IJobEntity
     public double Time;
     public float ThrustForce;
     public float InverseThrustCooldown;
-    public float TurnSmallStartupEnd;
-    public float TurnSmallRecoveryStart;
-    public float TurnSmallAnimationEnd;
+    public float TurnSmallTransitionIn;
 
     void Execute([ChunkIndexInQuery] int chunkIndex, Entity player, in Rotation rotation)
     {
@@ -92,6 +88,11 @@ partial struct ThrustStartJob : IJobEntity
                     )
                 );
 
+        quaternion toLocalSpace = math.inverse(rotation.Value);
+
+        float3 accelLocal =
+            math.mul(toLocalSpace, acceleration);
+
         ECB.AddComponent
             ( chunkIndex
             , player
@@ -100,6 +101,15 @@ partial struct ThrustStartJob : IJobEntity
                 , Acceleration = acceleration
                 }
             );
+   
+        AnimationClipIndex clipToPlay =
+            math.abs(accelLocal.x) > math.abs(accelLocal.y)
+                ? accelLocal.x > 0
+                    ? AnimationClipIndex.TurnSmallRight
+                    : AnimationClipIndex.TurnSmallLeft
+                : accelLocal.y > 0
+                    ? AnimationClipIndex.TurnSmallUp
+                    : AnimationClipIndex.TurnSmallDown;
 
         ECB.AddComponent
             ( chunkIndex
@@ -114,21 +124,20 @@ partial struct ThrustStartJob : IJobEntity
         ECB.AddComponent
             ( chunkIndex
             , player
-            , new ThrustCooldown
-                { TimeCreated = Time
-                , InverseDuration = InverseThrustCooldown
+            , new AnimationTransition
+                { NextIndex = clipToPlay
+                , Start = (float) Time
+                , Duration = TurnSmallTransitionIn
+                , Looping = false
                 }
             );
 
         ECB.AddComponent
             ( chunkIndex
             , player
-            , new TransientAnimationClip
-                { Index = AnimationClipIndex.TurnUpSmall
-                , TimeCreated = (float) Time
-                , StartupEnd = TurnSmallStartupEnd
-                , RecoveryStart = TurnSmallRecoveryStart
-                , AnimationEnd = TurnSmallAnimationEnd
+            , new ThrustCooldown
+                { TimeCreated = Time
+                , InverseDuration = InverseThrustCooldown
                 }
             );
 

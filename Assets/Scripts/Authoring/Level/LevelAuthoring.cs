@@ -7,8 +7,11 @@ public class LevelAuthoring : UnityEngine.MonoBehaviour
     public float ThrustDuration = 0.5f;
     public float ThrustCooldown = 5f;
     public float ThrustForce = 10f;
-    public float TurnSmallStartup = 0.1f;
-    public float TurnSmallRecovery = 0.2f;
+
+    public float TurnSmallTransitionIn = 0.1f;
+    public float TurnSmallDuration = 31f/24f;
+
+    public float AfterThrustTransition = 1f;
 }
 
 public class LevelBaker : Baker<LevelAuthoring>
@@ -22,8 +25,9 @@ public class LevelBaker : Baker<LevelAuthoring>
                 , ThrustDuration = authoring.ThrustDuration
                 , ThrustCooldown = authoring.ThrustCooldown
                 , ThrustForce = authoring.ThrustForce
-                , TurnSmallStartup = authoring.TurnSmallStartup
-                , TurnSmallRecovery = authoring.TurnSmallRecovery
+                , TurnSmallTransitionIn = authoring.TurnSmallTransitionIn
+                , TurnSmallDuration = authoring.TurnSmallDuration
+                , AfterThrustTransition = authoring.AfterThrustTransition
                 }
             );
     }

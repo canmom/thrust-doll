@@ -32,6 +32,15 @@ partial struct AnimationClipPlayerSystem : ISystem
             }
             .ScheduleParallel();
 
+        new AnimationTransitionJob
+            { Time = time
+            , ECB =
+                ecbSystem
+                    .CreateCommandBuffer(state.WorldUnmanaged)
+                    .AsParallelWriter()
+            }
+            .ScheduleParallel();
+
         new TransientClipBlenderJob
             { Time = time
             , ECB =
@@ -108,7 +117,7 @@ partial struct AnimationTransitionJob : IJobEntity
 
         nextClip.SamplePose
             ( ref blender
-            , 1 - nextWeight
+            , nextWeight
             , nextClipTime
             );
 

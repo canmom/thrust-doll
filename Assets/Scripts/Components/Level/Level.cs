@@ -9,6 +9,8 @@ partial struct Level : IComponentData
     public float ThrustCooldown;
     public float ThrustForce;
     
-    public float TurnSmallStartup;
-    public float TurnSmallRecovery;
+    public float TurnSmallTransitionIn;
+    public float TurnSmallDuration;
+
+    public float AfterThrustTransition;
 }

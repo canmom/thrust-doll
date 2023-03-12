@@ -11,7 +11,10 @@ using UnityEngine;
 public class AnimationClipsAuthoring : MonoBehaviour
 {
     public AnimationClip Flight;
-    public AnimationClip TurnUpSmall;
+    public AnimationClip TurnSmallUp;
+    public AnimationClip TurnSmallDown;
+    public AnimationClip TurnSmallLeft;
+    public AnimationClip TurnSmallRight;
     public AnimationClip Thrust;
 }
 
@@ -22,6 +25,13 @@ struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
     public bool Bake(AnimationClipsAuthoring authoring, IBaker baker)
     {
         baker.AddComponent<AnimationClips>();
+        baker.AddComponent
+            ( new CurrentAnimationClip
+                { Index = AnimationClipIndex.LevelFlight
+                , Start = 0f
+                , Looping = true
+                }
+            );
 
         var clips =
             new NativeArray<SkeletonClipConfig>
@@ -36,9 +46,24 @@ struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
                 { clip = authoring.Flight
                 , settings = SkeletonClipCompressionSettings.kDefaultSettings
                 };
-        clips[(int) AnimationClipIndex.TurnUpSmall] =
+        clips[(int) AnimationClipIndex.TurnSmallUp] =
             new SkeletonClipConfig
-                { clip = authoring.TurnUpSmall
+                { clip = authoring.TurnSmallUp
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.TurnSmallDown] =
+            new SkeletonClipConfig
+                { clip = authoring.TurnSmallDown
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.TurnSmallLeft] =
+            new SkeletonClipConfig
+                { clip = authoring.TurnSmallLeft
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.TurnSmallRight] =
+            new SkeletonClipConfig
+                { clip = authoring.TurnSmallRight
                 , settings = SkeletonClipCompressionSettings.kDefaultSettings
                 };
         clips[(int) AnimationClipIndex.Thrust] =
@@ -49,6 +74,7 @@ struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
 
         blob = baker.RequestCreateBlobAsset(baker.GetComponent<Animator>(), clips);
         return true;
+        
     }
 
     public void PostProcessBlobRequests(EntityManager entityManager, Entity entity)
