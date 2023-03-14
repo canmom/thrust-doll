@@ -18,5 +18,6 @@ public enum AnimationClipIndex
 , TurnSmallDown
 , TurnSmallLeft
 , TurnSmallRight
+, TurnReverse
 , Thrust
 }

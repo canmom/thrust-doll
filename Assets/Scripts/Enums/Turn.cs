@@ -1,0 +1,4 @@
+enum Turn
+{ Small
+, Reverse
+}

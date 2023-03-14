@@ -59,6 +59,7 @@ partial struct ThrustStartSystem : ISystem
                     , ThrustForce = level.ThrustForce
                     , InverseThrustCooldown = 1f/level.ThrustCooldown
                     , TurnSmallTransitionIn = level.TurnSmallTransitionIn
+                    , IncreasedDrag = level.IncreasedDragDuringFlip
                     }
                     .Schedule();
             }
@@ -75,8 +76,14 @@ partial struct ThrustStartJob : IJobEntity
     public float ThrustForce;
     public float InverseThrustCooldown;
     public float TurnSmallTransitionIn;
+    public float IncreasedDrag;
 
-    void Execute([ChunkIndexInQuery] int chunkIndex, Entity player, in Rotation rotation)
+    void Execute
+        ([ChunkIndexInQuery] int chunkIndex
+        , Entity player
+        , in Rotation rotation
+        , ref Drag drag
+        )
     {
         float3 acceleration =
             math.mul
@@ -91,7 +98,7 @@ partial struct ThrustStartJob : IJobEntity
         quaternion toLocalSpace = math.inverse(rotation.Value);
 
         float3 accelLocal =
-            math.mul(toLocalSpace, acceleration);
+            math.mul(toLocalSpace, math.normalize(acceleration));
 
         ECB.AddComponent
             ( chunkIndex
@@ -101,36 +108,69 @@ partial struct ThrustStartJob : IJobEntity
                 , Acceleration = acceleration
                 }
             );
-   
-        AnimationClipIndex clipToPlay =
-            math.abs(accelLocal.x) > math.abs(accelLocal.y)
-                ? accelLocal.x > 0
-                    ? AnimationClipIndex.TurnSmallRight
-                    : AnimationClipIndex.TurnSmallLeft
-                : accelLocal.y > 0
-                    ? AnimationClipIndex.TurnSmallUp
-                    : AnimationClipIndex.TurnSmallDown;
 
-        ECB.AddComponent
-            ( chunkIndex
-            , player
-            , new ThrustWindup
-                { TimeCreated = Time
-                , InitialRotation = rotation.Value
-                , TargetRotation = CameraRotation
-                }
-            );
+        if ( accelLocal.z > 0.5) {    
+            AnimationClipIndex clipToPlay =
+                math.abs(accelLocal.x) > math.abs(accelLocal.y)
+                    ? accelLocal.x > 0
+                        ? AnimationClipIndex.TurnSmallRight
+                        : AnimationClipIndex.TurnSmallLeft
+                    : accelLocal.y > 0
+                        ? AnimationClipIndex.TurnSmallUp
+                        : AnimationClipIndex.TurnSmallDown;
 
-        ECB.AddComponent
-            ( chunkIndex
-            , player
-            , new AnimationTransition
-                { NextIndex = clipToPlay
-                , Start = (float) Time
-                , Duration = TurnSmallTransitionIn
-                , Looping = false
-                }
-            );
+            ECB.AddComponent
+                ( chunkIndex
+                , player
+                , new ThrustRotation
+                    { TimeCreated = Time
+                    , InitialRotation = rotation.Value
+                    , TargetRotation = CameraRotation
+                    , BeforeActive = true
+                    }
+                );
+
+            ECB.AddComponent
+                ( chunkIndex
+                , player
+                , new AnimationTransition
+                    { NextIndex = clipToPlay
+                    , Start = (float) Time
+                    , Duration = TurnSmallTransitionIn
+                    , Looping = false
+                    }
+                );
+        } else {
+            ECB.AddComponent
+                ( chunkIndex
+                , player
+                , new ThrustFlip
+                    { TimeCreated = Time
+                    , InitialRotation = rotation.Value
+                    , BackRotation =
+                        quaternion
+                            .LookRotationSafe
+                                ( acceleration
+                                , math.mul(rotation.Value, new float3 (0, -1, 0))
+                                )
+                    , TargetRotation = CameraRotation
+                    , PreviousDrag = drag.Coefficient
+                    }
+                );
+
+            ECB.AddComponent
+                ( chunkIndex
+                , player
+                , new AnimationTransition
+                    { NextIndex = AnimationClipIndex.TurnReverse 
+                    , Start = (float) Time
+                    , Duration = TurnSmallTransitionIn
+                    , Looping = false
+                    }
+                );
+
+            drag.Coefficient = IncreasedDrag;
+        }
 
         ECB.AddComponent
             ( chunkIndex
@@ -140,7 +180,5 @@ partial struct ThrustStartJob : IJobEntity
                 , InverseDuration = InverseThrustCooldown
                 }
             );
-
-        //target.Target = math.normalize(acceleration);
     }
 }

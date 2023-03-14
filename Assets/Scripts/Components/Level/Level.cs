@@ -13,4 +13,8 @@ partial struct Level : IComponentData
     public float TurnSmallDuration;
 
     public float AfterThrustTransition;
+
+    public float IncreasedDragDuringFlip;
+
+    public Entity CubePrefab;
 }

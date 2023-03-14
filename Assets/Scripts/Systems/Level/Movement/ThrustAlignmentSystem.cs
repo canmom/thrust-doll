@@ -25,7 +25,13 @@ partial struct ThrustAlignmentSystem : ISystem
     {
         float duration = SystemAPI.GetSingleton<Level>().ThrustWindup;
 
-        new ThrustAlignmentJob
+        new ThrustRotationJob
+            { Time = SystemAPI.Time.ElapsedTime
+            , Duration = duration
+            }
+            .Schedule();
+
+        new ThrustFlipJob
             { Time = SystemAPI.Time.ElapsedTime
             , Duration = duration
             }
@@ -34,12 +40,13 @@ partial struct ThrustAlignmentSystem : ISystem
     }
 }
 
-partial struct ThrustAlignmentJob : IJobEntity
+[WithAll(typeof(Thrust))]
+partial struct ThrustRotationJob : IJobEntity
 {
     public double Time;
     public float Duration;
 
-    void Execute(in Thrust thrust, in ThrustWindup windup, ref Rotation rotation)
+    void Execute(in ThrustRotation windup, ref Rotation rotation)
     {
         float amount = 
             ThrustDoll
@@ -57,5 +64,42 @@ partial struct ThrustAlignmentJob : IJobEntity
                     , windup.TargetRotation
                     , amount
                     );
+    }
+}
+
+[WithAll(typeof(Thrust))]
+partial struct ThrustFlipJob : IJobEntity
+{
+    public double Time;
+    public float Duration;
+
+    void Execute(in ThrustFlip flip, ref Rotation rotation)
+    {
+        float amount = 
+            ThrustDoll
+                .Util
+                .BezierComponent
+                    ( 0f
+                    , 0.8f
+                    , (float)(Time - flip.TimeCreated) / Duration
+                    );
+
+        quaternion flipRotation =
+            math.mul
+                ( flip
+                    .InitialRotation
+                , math.slerp
+                    ( quaternion.identity
+                    , quaternion.RotateX(math.PI)
+                    , amount
+                    )
+                );
+
+        rotation.Value =
+            math.slerp
+                ( flipRotation
+                , flip.BackRotation
+                , amount
+                );
     }
 }

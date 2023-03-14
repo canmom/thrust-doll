@@ -15,6 +15,7 @@ public class AnimationClipsAuthoring : MonoBehaviour
     public AnimationClip TurnSmallDown;
     public AnimationClip TurnSmallLeft;
     public AnimationClip TurnSmallRight;
+    public AnimationClip TurnReverse;
     public AnimationClip Thrust;
 }
 
@@ -64,6 +65,11 @@ struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
         clips[(int) AnimationClipIndex.TurnSmallRight] =
             new SkeletonClipConfig
                 { clip = authoring.TurnSmallRight
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.TurnReverse] = 
+            new SkeletonClipConfig
+                { clip = authoring.TurnReverse
                 , settings = SkeletonClipCompressionSettings.kDefaultSettings
                 };
         clips[(int) AnimationClipIndex.Thrust] =
