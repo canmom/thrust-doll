@@ -1,6 +1,7 @@
 {
   "dependencies": {
-    "com.latios.latiosframework": "0.6.4",
+    "com.hecomi.uraymarching": "2.3.1",
+    "com.latios.latiosframework": "0.6.6",
     "com.unity.ai.navigation": "1.1.1",
     "com.unity.burst": "1.8.3",
     "com.unity.collab-proxy": "2.0.0",
@@ -57,6 +58,13 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "com.latios.latiosframework"
+      ]
+    },
+    {
+      "name": "hecomi",
+      "url": "https://registry.npmjs.com",
+      "scopes": [
+        "com.hecomi"
       ]
     }
   ]

@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3acd6fe57257048db802c1c4c2b75248, type: 3}
+  m_Name: LevelRaymarchingGenerator
+  m_EditorClassIdentifier: 
+  shaderName: LevelRaymarching
+  shaderReference: {fileID: 4800000, guid: 3a024fd377d3823d6b8fa0409262142b, type: 3}
+  shaderTemplate: uRaymarching/UniversalRP/Lit
+  variables:
+  - key: Name
+    value: LevelRaymarching
+  - key: ObjectShape
+    value: NONE
+  - key: RaymarchingShaderDirectory
+    value: Packages/com.hecomi.uraymarching/Runtime/Shaders/Include/UniversalRP
+  - key: RenderType
+    value: Opaque
+  - key: RenderQueue
+    value: Geometry
+  - key: LOD
+    value: 300
+  conditions:
+  - key: ShadowCaster
+    value: 0
+  - key: FullScreen
+    value: 0
+  - key: WorldSpace
+    value: 1
+  - key: FollowObjectScale
+    value: 0
+  - key: CameraInsideObject
+    value: 0
+  - key: UseRaymarchingDepth
+    value: 1
+  - key: FallbackToDiffuse
+    value: 1
+  - key: ObjectScale
+    value: 0
+  - key: CheckIfInsideObject
+    value: 0
+  - key: RayStopsAtDepthTexture
+    value: 0
+  - key: RayStartsFromDepthTexture
+    value: 0
+  blocks:
+  - key: Properties
+    value: "    _Smooth(\"Smooth\", Range(0.5,5)) = 1.2\n\n    _NumMetaballs(\"Number
+      of metaballs\", Range(1,16)) = 2"
+    folded: 1
+  - key: DistanceFunction
+    value: "float _Smooth;\n\nuniform float4x4 _MetaballTransforms[16];\n\nint _NumMetaballs;\n\ninline
+      float DistanceFunction(float3 pos)\n{\n    float distance = 1./0.;\n    float
+      secondDistance = 1./0.;\n\n    for (int i = 0; i < _NumMetaballs; ++i)\n   
+      {\n        float sphereDist = Sphere(mul(_MetaballTransforms[i],float4(pos,1.0)),0.5);\n       
+      if (sphereDist < distance)\n        {\n            secondDistance = distance;\n           
+      distance = sphereDist;\n        } else if (sphereDist < secondDistance && sphereDist
+      >= distance) {\n            secondDistance = sphereDist;\n        }\n    }\n\n   
+      return SmoothMin(distance,secondDistance,_Smooth);\n}"
+    folded: 1
+  - key: PostEffect
+    value: 'inline void PostEffect(RaymarchInfo ray, inout PostEffectOutput o)
+
+      {
+
+      }'
+    folded: 1
+  constants: {fileID: 11400000, guid: 9c8b2f5a7a56c4e21bee7ca4ccfc6640, type: 2}
+  basicFolded: 1
+  conditionsFolded: 1
+  variablesFolded: 1
+  materialsFolded: 1
+  constantsFolded: 1

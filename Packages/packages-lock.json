@@ -1,7 +1,23 @@
 {
   "dependencies": {
+    "com.hecomi.uraymarching": {
+      "version": "2.3.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.hecomi.ushadertemplate": "1.0.2"
+      },
+      "url": "https://registry.npmjs.com"
+    },
+    "com.hecomi.ushadertemplate": {
+      "version": "1.0.2",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://registry.npmjs.com"
+    },
     "com.latios.latiosframework": {
-      "version": "file:com.latios.latiosframework@0.6.4",
+      "version": "file:com.latios.latiosframework@0.6.6",
       "depth": 0,
       "source": "embedded",
       "dependencies": {
