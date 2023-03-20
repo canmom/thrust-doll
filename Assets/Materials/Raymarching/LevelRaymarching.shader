@@ -32,7 +32,7 @@ Properties
 // @block Properties
     _Smooth("Smooth", Range(0.5,5)) = 1.2
 
-    _NumMetaballs("Number of metaballs", Range(1,16)) = 2
+    // _NumMetaballs("Number of metaballs", Range(1,16)) = 2
 // @endblock
 }
 
@@ -69,32 +69,24 @@ HLSLINCLUDE
 // @block DistanceFunction
 float _Smooth;
 
-uniform float4x4 _MetaballTransforms[16];
+uniform float4 _MetaballTranslations[16];
+uniform float _MetaballRadii[16];
 
-int _NumMetaballs;
+uniform int _NumMetaballs;
 
 inline float DistanceFunction(float3 pos)
 {
-    float distance = 1./0.;
-    float secondDistance = 1./0.;
+    float expDistance;
 
     for (int i = 0; i < _NumMetaballs; ++i)
     {
-        float sphereDist = Sphere(mul(_MetaballTransforms[i],float4(pos,1.0)),0.5);
-        // if (sphereDist < distance)
-        // {
-        //     secondDistance = distance;
-        //     distance = sphereDist;
-        // } else if (sphereDist < secondDistance && sphereDist >= distance) {
-        //     secondDistance = sphereDist;
-        // }
+        float sphereDist = Sphere(pos + _MetaballTranslations[i].xyz, _MetaballRadii[i]);
 
-        distance = min(sphereDist,distance);
+        expDistance += exp( - _Smooth * sphereDist);
     }
 
-    // return SmoothMin(distance,secondDistance,_Smooth);
+    return log(expDistance)/_Smooth;
 
-    return -distance;
 }
 // @endblock
 

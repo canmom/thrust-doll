@@ -1,13 +1,19 @@
 using Unity.Entities;
 using Unity.Transforms;
+using Latios;
 
 [UpdateInGroup(typeof(LateSimulationSystemGroup))]
-partial class CameraUpdateSystem : SystemBase
+partial class CameraUpdateSystem : SubSystem
 {
-    private UnityEngine.Camera _camera;
+    private UnityEngine.Transform _camera;
+    private UnityEngine.Transform _raymarchingQuad;
 
     protected override void OnCreate() {
-        _camera = UnityEngine.Camera.main;
+        _camera = UnityEngine.Camera.main.transform;
+        var raymarchingQuadGO = UnityEngine.GameObject.Find("RaymarchingQuad");
+        if (raymarchingQuadGO is not null) {
+            _raymarchingQuad = raymarchingQuadGO.transform;
+        }
 
         RequireForUpdate<CameraTransform>();
     }
@@ -21,8 +27,13 @@ partial class CameraUpdateSystem : SystemBase
             SystemAPI
                 .GetComponent<LocalToWorld>(cameraTransform);
 
-        _camera.transform.position = transform.Position;
-        _camera.transform.rotation = transform.Rotation;
+        _camera.position = transform.Position;
+        _camera.rotation = transform.Rotation;
+
+        if (_raymarchingQuad is not null)
+        {
+            _raymarchingQuad.position = transform.Position + transform.Forward;
+            _raymarchingQuad.rotation = transform.Rotation;
+        }
     }
 }
-        

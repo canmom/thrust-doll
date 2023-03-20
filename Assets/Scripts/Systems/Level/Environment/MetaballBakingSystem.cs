@@ -3,32 +3,46 @@ using Unity.Collections;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
+using Latios;
 
 [WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
-partial class MetaballBakingSystem : BakingSystem
+partial class MetaballBakingSystem : SystemBase
 {
     protected override void OnUpdate()
     {
         EntityQuery query =
             SystemAPI
                 .QueryBuilder()
-                .WithAll<Translation, Metaball>()
+                .WithAll<Translation, NonUniformScale, Metaball>()
                 .Build();
 
-        NativeArray<Translation> transforms =
+        NativeArray<Translation> translations =
             query
-                .ToComponentDataArray<LocalToWorld>(Allocator.Temp);
+                .ToComponentDataArray<Translation>(Allocator.Temp);
 
-        Matrix4x4[] transformMatrices = new Matrix4x4[16];
+        NativeArray<NonUniformScale> scales =
+            query
+                .ToComponentDataArray<NonUniformScale>(Allocator.Temp);
+
+        Vector4[] translationVectors = new Vector4[16];
+        float[] radii = new float[16];
 
         int i = 0;
-        foreach (LocalToWorld transform in transforms)
+        foreach (Translation translation in translations)
         {
+            translationVectors[i] = (Vector4) (new float4(-translation.Value, 1.0f));
+            ++i;
+        }
 
-            transformMatrices[i] = (Matrix4x4) math.inverse(transform.Value);
+        i = 0;
+        foreach (NonUniformScale scale in scales)
+        {
+            radii[i] = (scale.Value.x + scale.Value.y + scale.Value.z)/6f;
             ++i;
         }
         
-        Shader.SetGlobalMatrixArray("_MetaballTransforms", transformMatrices);
+        Shader.SetGlobalVectorArray("_MetaballTranslations", translationVectors);
+        Shader.SetGlobalFloatArray("_MetaballRadii", radii);
+        Shader.SetGlobalInteger("_NumMetaballs", translations.Length);
     }
 }
