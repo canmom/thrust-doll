@@ -13,9 +13,14 @@ public class LevelAuthoring : UnityEngine.MonoBehaviour
 
     public float AfterThrustTransition = 1f;
 
+    public float WallkickStopDuration = 0.1f;
+
+
     public float IncreasedDragDuringFlip = 10f;
 
     public UnityEngine.GameObject CubePrefab;
+
+    public float MetaballSmoothing = 1.2f;
 }
 
 public class LevelBaker : Baker<LevelAuthoring>
@@ -32,8 +37,10 @@ public class LevelBaker : Baker<LevelAuthoring>
                 , TurnSmallTransitionIn = authoring.TurnSmallTransitionIn
                 , TurnSmallDuration = authoring.TurnSmallDuration
                 , AfterThrustTransition = authoring.AfterThrustTransition
+                , WallkickStopDuration = authoring.WallkickStopDuration
                 , IncreasedDragDuringFlip = authoring.IncreasedDragDuringFlip
                 , CubePrefab = GetEntity(authoring.CubePrefab)
+                , MetaballSmoothing = authoring.MetaballSmoothing
                 }
             );
     }

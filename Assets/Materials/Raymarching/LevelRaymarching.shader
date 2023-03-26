@@ -30,7 +30,7 @@ Properties
     [PowerSlider(10.0)] _NormalDelta("NormalDelta", Range(0.00001, 0.1)) = 0.0001
 
 // @block Properties
-    _Smooth("Smooth", Range(0.5,5)) = 1.2
+    //_Smooth("Smooth", Range(0.5,5)) = 1.2
 
     // _NumMetaballs("Number of metaballs", Range(1,16)) = 2
 // @endblock

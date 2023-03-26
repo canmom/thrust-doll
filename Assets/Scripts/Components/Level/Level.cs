@@ -14,7 +14,11 @@ partial struct Level : IComponentData
 
     public float AfterThrustTransition;
 
+    public float WallkickStopDuration;
+
     public float IncreasedDragDuringFlip;
 
     public Entity CubePrefab;
+
+    public float MetaballSmoothing;
 }

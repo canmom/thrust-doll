@@ -53,7 +53,7 @@ MonoBehaviour:
     value: 0
   blocks:
   - key: Properties
-    value: "    _Smooth(\"Smooth\", Range(0.5,5)) = 1.2\n\n    // _NumMetaballs(\"Number
+    value: "    //_Smooth(\"Smooth\", Range(0.5,5)) = 1.2\n\n    // _NumMetaballs(\"Number
       of metaballs\", Range(1,16)) = 2"
     folded: 1
   - key: DistanceFunction

@@ -5,8 +5,8 @@ using Unity.Transforms;
 using UnityEngine;
 using Latios;
 
-[WorldSystemFilter(WorldSystemFilterFlags.BakingSystem)]
-partial class MetaballBakingSystem : SystemBase
+[UpdateInGroup(typeof(Latios.Systems.LatiosWorldSyncGroup))]
+partial class MetaballBakingSystem : SubSystem
 {
     protected override void OnUpdate()
     {
@@ -40,9 +40,14 @@ partial class MetaballBakingSystem : SystemBase
             radii[i] = (scale.Value.x + scale.Value.y + scale.Value.z)/6f;
             ++i;
         }
+
+        float smooth = sceneBlackboardEntity.GetComponentData<Level>().MetaballSmoothing;
         
         Shader.SetGlobalVectorArray("_MetaballTranslations", translationVectors);
         Shader.SetGlobalFloatArray("_MetaballRadii", radii);
         Shader.SetGlobalInteger("_NumMetaballs", translations.Length);
+        Shader.SetGlobalFloat("_Smooth", smooth);
+
+        Enabled = false;
     }
 }

@@ -1,6 +1,6 @@
 using Unity.Entities;
 
-partial struct Metaball : IComponentData
+partial struct CollidesWithSDF : IComponentData
 {
     public float Radius;
 }
