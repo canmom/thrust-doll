@@ -46,11 +46,10 @@ partial struct ThrustStartSystem : ISystem
                     SystemAPI
                         .GetSingleton<Level>();
 
-                EntityCommandBuffer.ParallelWriter ecb =
+                EntityCommandBuffer ecb =
                     SystemAPI
                         .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
-                        .CreateCommandBuffer(state.WorldUnmanaged)
-                        .AsParallelWriter();
+                        .CreateCommandBuffer(state.WorldUnmanaged);
 
                 new ThrustStartJob
                     { CameraRotation = rotation
@@ -71,7 +70,7 @@ partial struct ThrustStartSystem : ISystem
 partial struct ThrustStartJob : IJobEntity
 {
     public quaternion CameraRotation;
-    public EntityCommandBuffer.ParallelWriter ECB;
+    public EntityCommandBuffer ECB;
     public double Time;
     public float ThrustForce;
     public float InverseThrustCooldown;
@@ -79,8 +78,7 @@ partial struct ThrustStartJob : IJobEntity
     public float IncreasedDrag;
 
     void Execute
-        ([ChunkIndexInQuery] int chunkIndex
-        , Entity player
+        ( Entity player
         , in Rotation rotation
         , ref Drag drag
         )
@@ -101,11 +99,18 @@ partial struct ThrustStartJob : IJobEntity
             math.mul(toLocalSpace, math.normalize(acceleration));
 
         ECB.AddComponent
-            ( chunkIndex
-            , player
+            ( player
             , new Thrust
                 { TimeCreated = Time
                 , Acceleration = acceleration
+                }
+            );
+
+        ECB.AddComponent
+            ( player
+            , new ThrustWindup
+                { TimeCreated = Time
+                , PreviousDrag = drag.Coefficient
                 }
             );
 
@@ -120,19 +125,16 @@ partial struct ThrustStartJob : IJobEntity
                         : AnimationClipIndex.TurnSmallDown;
 
             ECB.AddComponent
-                ( chunkIndex
-                , player
-                , new ThrustRotation
+                (  player
+                , new RotateTo
                     { TimeCreated = Time
                     , InitialRotation = rotation.Value
                     , TargetRotation = CameraRotation
-                    , BeforeActive = true
                     }
                 );
 
             ECB.AddComponent
-                ( chunkIndex
-                , player
+                (  player
                 , new AnimationTransition
                     { NextIndex = clipToPlay
                     , Start = (float) Time
@@ -142,9 +144,8 @@ partial struct ThrustStartJob : IJobEntity
                 );
         } else {
             ECB.AddComponent
-                ( chunkIndex
-                , player
-                , new ThrustFlip
+                (  player
+                , new Flip
                     { TimeCreated = Time
                     , InitialRotation = rotation.Value
                     , BackRotation =
@@ -154,13 +155,11 @@ partial struct ThrustStartJob : IJobEntity
                                 , math.mul(rotation.Value, new float3 (0, -1, 0))
                                 )
                     , TargetRotation = CameraRotation
-                    , PreviousDrag = drag.Coefficient
                     }
                 );
 
             ECB.AddComponent
-                ( chunkIndex
-                , player
+                (  player
                 , new AnimationTransition
                     { NextIndex = AnimationClipIndex.TurnReverse 
                     , Start = (float) Time
@@ -173,8 +172,7 @@ partial struct ThrustStartJob : IJobEntity
         }
 
         ECB.AddComponent
-            ( chunkIndex
-            , player
+            (  player
             , new ThrustCooldown
                 { TimeCreated = Time
                 , InverseDuration = InverseThrustCooldown

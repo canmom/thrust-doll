@@ -3,7 +3,7 @@ using Unity.Burst;
 using Latios;
 
 [BurstCompile]
-partial struct ThrustSequenceSystem : ISystem
+partial struct SequenceSystem : ISystem
 {
     LatiosWorldUnmanaged _latiosWorld;
 
@@ -34,25 +34,13 @@ partial struct ThrustSequenceSystem : ISystem
             SystemAPI
                 .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
-        new ThrustRotationEndJob
+        new ThrustWindupEndJob
             { Time = SystemAPI.Time.ElapsedTime
-            , RotationDuration = level.ThrustWindup
+            , WindupDuration = level.ThrustWindup
             , TransitionDuration = turnSmallToActiveTransition
             , ECB =
                 ecbSystem
                     .CreateCommandBuffer(state.WorldUnmanaged)
-                    .AsParallelWriter()
-            }
-            .Schedule();
-
-        new ThrustFlipEndJob
-            { Time = SystemAPI.Time.ElapsedTime
-            , ReverseDuration = level.ThrustWindup
-            , TransitionDuration = turnSmallToActiveTransition
-            , ECB =
-                ecbSystem
-                    .CreateCommandBuffer(state.WorldUnmanaged)
-                    .AsParallelWriter()
             }
             .Schedule();
 
@@ -63,41 +51,58 @@ partial struct ThrustSequenceSystem : ISystem
             , ECB =
                 ecbSystem
                     .CreateCommandBuffer(state.WorldUnmanaged)
-                    .AsParallelWriter()
+            }
+            .Schedule();
+
+        new FlipEndJob
+            { Time = SystemAPI.Time.ElapsedTime
+            , ReverseDuration = level.ThrustWindup
+            , TransitionDuration = turnSmallToActiveTransition
+            , ECB =
+                ecbSystem
+                    .CreateCommandBuffer(state.WorldUnmanaged)
+            }
+            .Schedule();
+
+        new WallkickEndJob
+            { Time = SystemAPI.Time.ElapsedTime
+            , WallkickStopDuration = level.WallkickStopDuration
+            , TransitionDuration = level.TurnSmallDuration - level.WallkickStopDuration
+            , ECB =
+                ecbSystem
+                    .CreateCommandBuffer(state.WorldUnmanaged)
             }
             .Schedule();
     }
 }
 
-partial struct ThrustRotationEndJob : IJobEntity
+partial struct ThrustWindupEndJob : IJobEntity
 {
     public double Time;
-    public float RotationDuration;
+    public float WindupDuration;
     public float TransitionDuration;
 
-    public EntityCommandBuffer.ParallelWriter ECB;
+    public EntityCommandBuffer ECB;
 
     void Execute
-        ( in ThrustRotation rotation
+        ( in ThrustWindup windup
+        , ref Drag drag
         , Entity entity
-        , [ChunkIndexInQuery] int chunkIndex
         )
     {
-        if (((float) (Time - rotation.TimeCreated)) > RotationDuration)
+        if (((float) (Time - windup.TimeCreated)) > WindupDuration)
         {
-            ECB.RemoveComponent<ThrustRotation>(chunkIndex, entity);
-            if (rotation.BeforeActive) {
-                ECB.AddComponent
-                    ( chunkIndex
-                    , entity
-                    , new ThrustActive
-                        { TimeCreated = Time
-                        }
-                    );
-            }
+            ECB.RemoveComponent<ThrustWindup>(entity);
+            
             ECB.AddComponent
-                ( chunkIndex
-                , entity
+                ( entity
+                , new ThrustActive
+                    { TimeCreated = Time
+                    }
+                );
+
+            ECB.AddComponent
+                ( entity
                 , new AnimationTransition
                     { NextIndex = AnimationClipIndex.Thrust
                     , Start = (float) Time
@@ -105,47 +110,37 @@ partial struct ThrustRotationEndJob : IJobEntity
                     , Looping = true
                     }
                 );
+
+            drag.Coefficient = windup.PreviousDrag;
         }
     }
 }
 
-partial struct ThrustFlipEndJob : IJobEntity
+partial struct FlipEndJob : IJobEntity
 {
     public double Time;
     public float ReverseDuration;
     public float TransitionDuration;
 
-    public EntityCommandBuffer.ParallelWriter ECB;
+    public EntityCommandBuffer ECB;
 
     void Execute
-        ( in ThrustFlip flip
+        ( in Flip flip
         , ref Drag drag
         , Entity entity
-        , [ChunkIndexInQuery] int chunkIndex
         )
     {
         if (((float) (Time - flip.TimeCreated)) > ReverseDuration)
         {
-            ECB.RemoveComponent<ThrustFlip>(chunkIndex, entity);
-            ECB.AddComponent<ThrustRotation>
-                ( chunkIndex
-                , entity
-                , new ThrustRotation
+            ECB.RemoveComponent<Flip>(entity);
+            ECB.AddComponent<RotateTo>
+                ( entity
+                , new RotateTo
                     { TimeCreated = Time
                     , InitialRotation = flip.BackRotation
                     , TargetRotation = flip.TargetRotation
-                    , BeforeActive = false
                     }
                 );
-            ECB.AddComponent
-                ( chunkIndex
-                , entity
-                , new ThrustActive
-                    { TimeCreated = Time
-                    }
-                );
-
-            drag.Coefficient = flip.PreviousDrag;
         }
     }
 }
@@ -156,20 +151,18 @@ partial struct ThrustActiveEndJob : IJobEntity
     public double ActiveThrustDuration;
     public float TransitionDuration;
 
-    public EntityCommandBuffer.ParallelWriter ECB;
+    public EntityCommandBuffer ECB;
 
     void Execute
         ( in ThrustActive active
         , Entity entity
-        , [ChunkIndexInQuery] int chunkIndex
         )
     {
         if (((float) (Time - active.TimeCreated)) > ActiveThrustDuration)
         {
-            ECB.RemoveComponent<ThrustActive>(chunkIndex, entity);
+            ECB.RemoveComponent<ThrustActive>(entity);
             ECB.AddComponent
-                ( chunkIndex
-                , entity
+                ( entity
                 , new AnimationTransition
                     { NextIndex = AnimationClipIndex.LevelFlight
                     , Start = (float) Time
@@ -177,6 +170,38 @@ partial struct ThrustActiveEndJob : IJobEntity
                     , Looping = true
                     }
                 );
+        }
+    }
+}
+
+partial struct WallkickEndJob : IJobEntity
+{
+    public double Time;
+    public double WallkickStopDuration;
+    public float TransitionDuration;
+
+    public EntityCommandBuffer ECB;
+
+    void Execute
+        ( in WallKick wallkick
+        , ref Velocity velocity
+        , Entity entity
+        )
+    {
+        if (((float) (Time - wallkick.TimeCreated)) > WallkickStopDuration)
+        {
+            velocity.Value = wallkick.ReflectionVelocity;
+            ECB.RemoveComponent<WallKick>(entity);
+            ECB.AddComponent
+                ( entity
+                , new AnimationTransition
+                    { NextIndex = AnimationClipIndex.LevelFlight
+                    , Start = (float) Time
+                    , Duration = TransitionDuration
+                    , Looping = true
+                    }
+                );
+            ECB.AddComponent<ClearingWall>(entity);
         }
     }
 }

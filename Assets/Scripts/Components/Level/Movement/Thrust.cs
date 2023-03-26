@@ -11,30 +11,15 @@ public struct Thrust : IStatus, IComponentData
 }
 
 [BurstCompile]
-public struct ThrustRotation : IStatus, IComponentData
-{
-    public double TimeCreated { get; set; }
-
-    public quaternion InitialRotation;
-    public quaternion TargetRotation;
-
-    public bool BeforeActive;
-}
-
-[BurstCompile]
-public struct ThrustFlip : IStatus, IComponentData
-{
-    public double TimeCreated { get; set; }
-
-    public quaternion InitialRotation;
-    public quaternion BackRotation;
-    public quaternion TargetRotation;
-
-    public float PreviousDrag;
-}
-
-[BurstCompile]
 public struct ThrustActive : IStatus, IComponentData
 {
     public double TimeCreated { get; set; }
+}
+
+[BurstCompile]
+public struct ThrustWindup : IStatus, IComponentData
+{
+    public double TimeCreated { get; set; }
+
+    public float PreviousDrag;
 }

@@ -25,13 +25,13 @@ partial struct ThrustAlignmentSystem : ISystem
     {
         float duration = SystemAPI.GetSingleton<Level>().ThrustWindup;
 
-        new ThrustRotationJob
+        new RotateToJob
             { Time = SystemAPI.Time.ElapsedTime
             , Duration = duration
             }
             .Schedule();
 
-        new ThrustFlipJob
+        new FlipJob
             { Time = SystemAPI.Time.ElapsedTime
             , Duration = duration
             }
@@ -40,13 +40,12 @@ partial struct ThrustAlignmentSystem : ISystem
     }
 }
 
-[WithAll(typeof(Thrust))]
-partial struct ThrustRotationJob : IJobEntity
+partial struct RotateToJob : IJobEntity
 {
     public double Time;
     public float Duration;
 
-    void Execute(in ThrustRotation windup, ref Rotation rotation)
+    void Execute(in RotateTo windup, ref Rotation rotation)
     {
         float amount = 
             ThrustDoll
@@ -67,13 +66,12 @@ partial struct ThrustRotationJob : IJobEntity
     }
 }
 
-[WithAll(typeof(Thrust))]
-partial struct ThrustFlipJob : IJobEntity
+partial struct FlipJob : IJobEntity
 {
     public double Time;
     public float Duration;
 
-    void Execute(in ThrustFlip flip, ref Rotation rotation)
+    void Execute(in Flip flip, ref Rotation rotation)
     {
         float amount = 
             ThrustDoll

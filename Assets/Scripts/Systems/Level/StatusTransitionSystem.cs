@@ -4,17 +4,14 @@ using Unity.Jobs;
 using Unity.Collections;
 
 [assembly: RegisterGenericJobType(typeof(StatusEndJob<ThrustCooldown>))]
-//[assembly: RegisterGenericJobType(typeof(StatusEndJob<ThrustActive>))]
-//[assembly: RegisterGenericJobType(typeof(StatusChainJob<ThrustWindup, ThrustActive>))]
-
+[assembly: RegisterGenericJobType(typeof(StatusEndJob<RotateTo>))]
 
 [BurstCompile]
 [UpdateInGroup(typeof(LevelSystemGroup))]
 partial struct StatusTransitionSystem : ISystem, ISystemStartStop
 {
-    //StatusJobFields<ThrustActive> thrustActiveFields;
+    StatusJobFields<RotateTo> rotateToFields;
     StatusJobFields<ThrustCooldown> thrustCooldownFields;
-    //StatusJobFields<ThrustWindup> thrustWindupFields;
 
     [BurstCompile]
     public void OnStartRunning(ref SystemState state)
@@ -23,17 +20,15 @@ partial struct StatusTransitionSystem : ISystem, ISystemStartStop
 
         Level levelSettings = SystemAPI.GetSingleton<Level>();
 
-        // thrustWindupFields = getStatusFields<ThrustWindup>(ref state, queryBuilder, levelSettings.ThrustWindup);
-        // thrustActiveFields = getStatusFields<ThrustActive>(ref state, queryBuilder, levelSettings.ThrustDuration);
         thrustCooldownFields = getStatusFields<ThrustCooldown>(ref state, queryBuilder, levelSettings.ThrustCooldown);
+        rotateToFields = getStatusFields<RotateTo>(ref state, queryBuilder, levelSettings.ThrustWindup);
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        //scheduleChainJob<ThrustWindup, ThrustActive>(ref state, thrustWindupFields);
-        //scheduleEndJob<ThrustActive>(ref state, thrustActiveFields);
         scheduleEndJob<ThrustCooldown>(ref state, thrustCooldownFields);
+        scheduleEndJob<RotateTo>(ref state, rotateToFields);
     }
 
     [BurstCompile]
