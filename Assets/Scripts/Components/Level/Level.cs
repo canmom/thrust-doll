@@ -14,6 +14,7 @@ partial struct Level : IComponentData
 
     public float AfterThrustTransition;
 
+    public float WallkickFacingDuration;
     public float WallkickStopDuration;
 
     public float IncreasedDragDuringFlip;

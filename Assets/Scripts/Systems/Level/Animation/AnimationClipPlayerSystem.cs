@@ -2,6 +2,7 @@ using Unity.Entities;
 using Unity.Burst;
 using Unity.Mathematics;
 using Latios.Kinemation;
+using Unity.Collections;
 
 [BurstCompile]
 partial struct AnimationClipPlayerSystem : ISystem
@@ -27,8 +28,13 @@ partial struct AnimationClipPlayerSystem : ISystem
             SystemAPI
                 .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>();
 
+        ComponentLookup<AnimationClipTimeOverride> overrideLookup =
+            SystemAPI
+                .GetComponentLookup<AnimationClipTimeOverride>();
+
         new AnimationClipPlayerJob
             { Time = time
+            , OverrideLookup = overrideLookup
             }
             .ScheduleParallel();
 
@@ -38,15 +44,7 @@ partial struct AnimationClipPlayerSystem : ISystem
                 ecbSystem
                     .CreateCommandBuffer(state.WorldUnmanaged)
                     .AsParallelWriter()
-            }
-            .ScheduleParallel();
-
-        new TransientClipBlenderJob
-            { Time = time
-            , ECB =
-                ecbSystem
-                    .CreateCommandBuffer(state.WorldUnmanaged)
-                    .AsParallelWriter()
+            , OverrideLookup = overrideLookup
             }
             .ScheduleParallel();
     }
@@ -56,20 +54,30 @@ partial struct AnimationClipPlayerSystem : ISystem
 partial struct AnimationClipPlayerJob : IJobEntity
 {
     public float Time;
+    [ReadOnly] public ComponentLookup<AnimationClipTimeOverride> OverrideLookup;
 
     void Execute
         ( ref DynamicBuffer<OptimizedBoneToRoot> btrBuffer
         , in OptimizedSkeletonHierarchyBlobReference hierarchyRef
         , in AnimationClips animationClips
         , in CurrentAnimationClip currentAnimation
+        , Entity entity
         )
     {
         ref var clip =
             ref animationClips.blob.Value.clips[(int) currentAnimation.Index];
-        float clipTime =
-            currentAnimation.Looping
-                ? clip.LoopToClipTime(Time - currentAnimation.Start)
-                : Time - currentAnimation.Start;
+
+        float clipTime;
+        
+        if (OverrideLookup.TryGetComponent(entity, out AnimationClipTimeOverride timeOverride))
+        {
+            clipTime = timeOverride.ClipTime;
+        } else {
+            clipTime =
+                currentAnimation.Looping
+                    ? clip.LoopToClipTime(Time - currentAnimation.Start)
+                    : Time - currentAnimation.Start;
+        }
 
         clip.SamplePose
             ( btrBuffer
@@ -83,6 +91,7 @@ partial struct AnimationTransitionJob : IJobEntity
 {
     public float Time;
     public EntityCommandBuffer.ParallelWriter ECB;
+    [ReadOnly] public ComponentLookup<AnimationClipTimeOverride> OverrideLookup;
 
     void Execute
         ( ref DynamicBuffer<OptimizedBoneToRoot> btrBuffer
@@ -105,7 +114,15 @@ partial struct AnimationTransitionJob : IJobEntity
             current.Looping
                 ? currentClip.LoopToClipTime(Time - current.Start)
                 : Time - current.Start;
-        float nextClipTime = Time - transition.Start;
+
+        float nextClipTime;
+        
+        if (OverrideLookup.TryGetComponent(entity, out AnimationClipTimeOverride timeOverride))
+        {
+            nextClipTime = timeOverride.ClipTime;
+        } else {
+            nextClipTime = Time - transition.Start;
+        }
 
         float nextWeight = math.smoothstep(0f, transition.Duration, nextClipTime);
 
@@ -132,57 +149,6 @@ partial struct AnimationTransitionJob : IJobEntity
             current.Looping = transition.Looping;
 
             ECB.RemoveComponent<AnimationTransition>(chunkIndex, entity);
-        }
-    }
-}
-
-partial struct TransientClipBlenderJob : IJobEntity
-{
-    public float Time;
-    public EntityCommandBuffer.ParallelWriter ECB;
-
-    void Execute
-        ( ref DynamicBuffer<OptimizedBoneToRoot> btrBuffer
-        , in OptimizedSkeletonHierarchyBlobReference hierarchyRef
-        , in AnimationClips animationClips
-        , in TransientAnimationClip tc
-        , Entity entity
-        , [ChunkIndexInQuery] int chunkIndex
-        )
-    {
-        BufferPoseBlender blender = new BufferPoseBlender(btrBuffer);
-
-        ref var baseClip =
-            ref animationClips.blob.Value.clips[0];
-        ref var transientClip =
-            ref animationClips.blob.Value.clips[(int) tc.Index];
-
-        float baseClipTime = baseClip.LoopToClipTime(Time);
-        float transientClipTime = Time - tc.TimeCreated;
-
-        float transientWeight = 
-            math.smoothstep(0f, tc.StartupEnd, transientClipTime)
-            * ( 1 - math.smoothstep(tc.RecoveryStart, tc.AnimationEnd, transientClipTime));
-
-        baseClip.SamplePose
-            ( ref blender
-            , 1 - transientWeight
-            , baseClipTime
-            );
-
-        transientClip.SamplePose
-            ( ref blender
-            , transientWeight
-            , transientClipTime
-            );
-
-        blender.NormalizeRotations();
-
-        blender.ApplyBoneHierarchyAndFinish(hierarchyRef.blob);
-
-        if (transientClipTime > tc.AnimationEnd)
-        {
-            ECB.RemoveComponent<TransientAnimationClip>(chunkIndex, entity);
         }
     }
 }

@@ -11,5 +11,10 @@ partial struct WallKick : IComponentData
 
 partial struct ClearingWall : IComponentData
 {
-    
+
+}
+
+partial struct FaceWall : IComponentData
+{
+    public quaternion InitialRotation;
 }

@@ -143,6 +143,7 @@ partial struct SDFCollisionJob : IJobEntity
                 , entity
                 , new SDFCollision
                     { Normal = normal
+                    , Distance = distance
                     }
                 );
         } else {

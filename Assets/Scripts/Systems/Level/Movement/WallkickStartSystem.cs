@@ -42,8 +42,8 @@ partial struct WallkickStartSystem : ISystem
         new WallKickStartJob
             { Time = SystemAPI.Time.ElapsedTime
             , ECB = ecb1
-            , FlipTransitionIn = 
-                level.TurnSmallTransitionIn
+            , FacingDuration = 
+                level.WallkickFacingDuration
             , TransitionLookup =
                 SystemAPI.
                     GetComponentLookup<AnimationTransition>()
@@ -58,12 +58,12 @@ partial struct WallkickStartSystem : ISystem
 }
 
 [WithAll(typeof(Character))]
-[WithNone(typeof(WallKick),typeof(ClearingWall))]
+[WithNone(typeof(WallKick),typeof(ClearingWall),typeof(FaceWall))]
 partial struct WallKickStartJob : IJobEntity
 {
     public double Time;
     public EntityCommandBuffer ECB;
-    public float FlipTransitionIn;
+    public float FacingDuration;
     public ComponentLookup<AnimationTransition> TransitionLookup;
 
     void Execute
@@ -88,56 +88,30 @@ partial struct WallKickStartJob : IJobEntity
         //end any thrust early
         ECB.RemoveComponent<ThrustActive>(entity);
 
-        //create a new WallKick
-        float3 reflectionVelocity =
-            velocity.Value - 2 * math.dot(velocity.Value, collision.Normal) * collision.Normal;
-            
-
-        ECB.AddComponent
-            ( entity
-            , new WallKick
-                { IncidentVelocity = velocity.Value
-                , ReflectionVelocity = reflectionVelocity
-                , Normal = collision.Normal
-                , TimeCreated = Time
-                }
-            );
-
         // initiate the animation
         ECB.AddComponent
             ( entity
             , new AnimationTransition
-                { NextIndex = AnimationClipIndex.TurnReverse 
+                { NextIndex = AnimationClipIndex.WallKickShallow
                 , Start = (float) Time
-                , Duration = FlipTransitionIn
+                , Duration = FacingDuration //controls amount of lerp
                 , Looping = false
                 }
             );
 
-        // rotate the character to point along the bounced off vector
         ECB.AddComponent
             ( entity
-            , new Flip
-                { InitialRotation =
-                    rotation.Value
-                , BackRotation =
-                    quaternion
-                        .LookRotationSafe
-                            ( reflectionVelocity
-                            , math.mul(rotation.Value, new float3 (0, -1, 0))
-                            )
-                , TargetRotation =
-                    quaternion
-                        .LookRotationSafe
-                            ( reflectionVelocity
-                            , new float3 (0, 1, 0)
-                            )
-                , TimeCreated = Time
+            , new AnimationClipTimeOverride
+                { ClipTime = 0f
                 }
             );
 
-        //zero out the velocity
-        velocity.Value = new float3(0f);
+        ECB.AddComponent
+            ( entity
+            , new FaceWall
+                { InitialRotation = rotation.Value
+                }
+            );
     }
 }
 

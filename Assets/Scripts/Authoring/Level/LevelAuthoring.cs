@@ -13,6 +13,7 @@ public class LevelAuthoring : UnityEngine.MonoBehaviour
 
     public float AfterThrustTransition = 1f;
 
+    public float WallkickFacingDuration = 1f/3f;
     public float WallkickStopDuration = 0.1f;
 
 

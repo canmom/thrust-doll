@@ -17,6 +17,7 @@ public class AnimationClipsAuthoring : MonoBehaviour
     public AnimationClip TurnSmallRight;
     public AnimationClip TurnReverse;
     public AnimationClip Thrust;
+    public AnimationClip WallKickShallow;
 }
 
 struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
@@ -75,6 +76,11 @@ struct AnimationClipsSmartBakeItem : ISmartBakeItem<AnimationClipsAuthoring>
         clips[(int) AnimationClipIndex.Thrust] =
             new SkeletonClipConfig
                 { clip = authoring.Thrust
+                , settings = SkeletonClipCompressionSettings.kDefaultSettings
+                };
+        clips[(int) AnimationClipIndex.WallKickShallow] =
+            new SkeletonClipConfig
+                { clip = authoring.WallKickShallow
                 , settings = SkeletonClipCompressionSettings.kDefaultSettings
                 };
 

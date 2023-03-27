@@ -457,6 +457,8 @@ MonoBehaviour:
   TurnSmallTransitionIn: 0.1
   TurnSmallDuration: 1.2916666
   AfterThrustTransition: 1
+  WallkickFacingDuration: 0.33333334
+  WallkickStopDuration: 0.1
   IncreasedDragDuringFlip: 0.8
   CubePrefab: {fileID: 4114390680018502608, guid: 5f96410f7adf63524aafa6e672345796,
     type: 3}
@@ -1264,6 +1266,8 @@ MonoBehaviour:
   TurnReverse: {fileID: -2077485942146924364, guid: 73254621da1ec96d286b5b6761bc4dfe,
     type: 3}
   Thrust: {fileID: 5556346291730314454, guid: 73254621da1ec96d286b5b6761bc4dfe, type: 3}
+  WallKickShallow: {fileID: -5324665295667878238, guid: 73254621da1ec96d286b5b6761bc4dfe,
+    type: 3}
 --- !u!114 &2110020006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1292,6 +1296,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CollisionRadius: 1
+  InnerRadius: 0
 --- !u!1001 &2140734559
 PrefabInstance:
   m_ObjectHideFlags: 0
