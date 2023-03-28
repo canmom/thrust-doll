@@ -9,7 +9,7 @@ using Unity.Mathematics;
 [BurstCompile]
 [UpdateInGroup(typeof(LevelSystemGroup))]
 [UpdateAfter(typeof(ProjectileCollisionLayerSystem))]
-partial struct PlayerCollisionSystem : ISystem
+partial struct ProjectilePlayerCollisionSystem : ISystem
 {
     LatiosWorldUnmanaged _latiosWorld;
 
@@ -34,16 +34,10 @@ partial struct PlayerCollisionSystem : ISystem
                 .GetCollectionComponent<ProjectileCollisionLayer>(true)
                 .Layer;
 
-        var wallCollisionLayer =
-            _latiosWorld
-                .sceneBlackboardEntity
-                .GetCollectionComponent<WallCollisionLayer>(true)
-                .Layer;
-
-        new PlayerColliderCastJob
-            { TargetLayer = wallCollisionLayer
-            }
-            .Schedule();
+        // new PlayerColliderCastJob
+        //     { TargetLayer = wallCollisionLayer
+        //     }
+        //     .Schedule();
 
         var playerCollisionLayer =
             _latiosWorld
@@ -59,7 +53,7 @@ partial struct PlayerCollisionSystem : ISystem
         state.Dependency =
             Latios.Psyshock.Physics
                 .FindPairs
-                    ( wallCollisionLayer
+                    ( projectileCollisionLayer
                     , playerCollisionLayer
                     , processor
                     )
@@ -75,8 +69,8 @@ struct DamagePlayerProcessor : IFindPairsProcessor
 {
     public void Execute(in FindPairsResult result)
     {
-        bool didHitWall = 
-            Latios.Psyshock
+        if
+            ( Latios.Psyshock
                 .Physics
                 .DistanceBetween
                     ( result.bodyA.collider
@@ -85,37 +79,10 @@ struct DamagePlayerProcessor : IFindPairsProcessor
                     , result.bodyB.transform
                     , 0f
                     , out var hitData
-                    );
-
-        //UnityEngine.Debug.LogFormat("Player might have hit a wall. Distance: {0}", hitData.distance);
-
-        // UnityEngine.Debug.Log
-        //     ( Latios.Psyshock
-        //         .PhysicsDebug
-        //         .LogDistanceBetween
-        //             ( result.bodyA.collider
-        //             , new Latios
-        //                 .Psyshock
-        //                 .PhysicsDebug
-        //                 .TransformQvvs
-        //                     ( result.bodyA.transform
-        //                     )
-        //             , result.bodyB.collider
-        //             , new Latios
-        //                 .Psyshock
-        //                 .PhysicsDebug
-        //                 .TransformQvvs
-        //                     ( result.bodyB.transform
-        //                     )
-        //             , 0f
-        //             )
-        //     );
-
-        if
-            ( didHitWall
+                    )
             )
         {
-            UnityEngine.Debug.Log("Player hit a wall");
+            UnityEngine.Debug.Log("Player was hit by a bullet.");
         }
     }
 

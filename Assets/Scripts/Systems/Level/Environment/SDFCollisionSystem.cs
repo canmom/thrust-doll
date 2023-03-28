@@ -46,17 +46,15 @@ partial struct SDFCollisionSystem : ISystem
             MetaballsQuery
                 .ToComponentDataArray<Translation>(Allocator.TempJob);
 
-        EntityCommandBuffer.ParallelWriter ecb =
+        ComponentLookup<SDFCollision> collisionLookup =
             SystemAPI
-                .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
-                .CreateCommandBuffer(state.WorldUnmanaged)
-                .AsParallelWriter();
+                .GetComponentLookup<SDFCollision>();
 
         new SDFCollisionJob
             { MetaballRadii = MetaballRadii
             , MetaballTranslations = MetaballTranslations
             , Smooth = level.MetaballSmoothing
-            , ECB = ecb
+            , CollisionLookup = collisionLookup
             }
             .ScheduleParallel();
     }
@@ -68,7 +66,8 @@ partial struct SDFCollisionJob : IJobEntity
     [ReadOnly] public NativeArray<Translation> MetaballTranslations;
     public float Smooth;
 
-    public EntityCommandBuffer.ParallelWriter ECB;
+    [NativeDisableParallelForRestriction]
+    public ComponentLookup<SDFCollision> CollisionLookup;
 
     void Execute
         ( [ChunkIndexInQuery] int chunkIndex
@@ -129,27 +128,32 @@ partial struct SDFCollisionJob : IJobEntity
 
         float distance = math.log(expDistance);
 
-        float3 normal =
-            math.normalize
-                ( k.xyy * normalExpDists.x
-                + k.yyx * normalExpDists.y
-                + k.yxy * normalExpDists.z
-                + k.xxx * normalExpDists.w
-                );
-
         if (distance < collider.Radius) {
-            ECB.AddComponent
-                ( chunkIndex
-                , entity
-                , new SDFCollision
-                    { Normal = normal
-                    , Distance = distance
-                    }
-                );
+            float3 normal =
+                math.normalize
+                    ( k.xyy * normalExpDists.x
+                    + k.yyx * normalExpDists.y
+                    + k.yxy * normalExpDists.z
+                    + k.xxx * normalExpDists.w
+                    );
+
+            CollisionLookup[entity]
+                = new SDFCollision
+                    { Distance = distance
+                    , Normal = normal
+                    };
+
+            CollisionLookup
+                .SetComponentEnabled
+                    ( entity
+                    , true
+                    );
         } else {
-            ECB.RemoveComponent<SDFCollision>
-                ( chunkIndex
-                , entity);
+            CollisionLookup
+                .SetComponentEnabled
+                    ( entity
+                    , false
+                    );
         }
     }
 
