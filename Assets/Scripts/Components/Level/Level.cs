@@ -15,11 +15,14 @@ partial struct Level : IComponentData
     public float AfterThrustTransition;
 
     public float WallkickFacingDuration;
+    public float WallkickTransientDuration;
     public float WallkickStopDuration;
+    public float WallkickRealignmentDuration;
 
     public float IncreasedDragDuringFlip;
 
     public Entity CubePrefab;
+    public Entity BulletPrefab;
 
     public float MetaballSmoothing;
 }

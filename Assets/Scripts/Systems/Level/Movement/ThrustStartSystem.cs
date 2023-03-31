@@ -57,6 +57,7 @@ partial struct ThrustStartSystem : ISystem
                     , Time = SystemAPI.Time.ElapsedTime
                     , ThrustForce = level.ThrustForce
                     , InverseThrustCooldown = 1f/level.ThrustCooldown
+                    , ThrustWindup = level.ThrustWindup
                     , TurnSmallTransitionIn = level.TurnSmallTransitionIn
                     , IncreasedDrag = level.IncreasedDragDuringFlip
                     }
@@ -74,6 +75,7 @@ partial struct ThrustStartJob : IJobEntity
     public double Time;
     public float ThrustForce;
     public float InverseThrustCooldown;
+    public float ThrustWindup;
     public float TurnSmallTransitionIn;
     public float IncreasedDrag;
 
@@ -130,6 +132,7 @@ partial struct ThrustStartJob : IJobEntity
                     { TimeCreated = Time
                     , InitialRotation = rotation.Value
                     , TargetRotation = CameraRotation
+                    , Duration = ThrustWindup
                     }
                 );
 

@@ -17,4 +17,6 @@ partial struct ClearingWall : IComponentData
 partial struct FaceWall : IComponentData
 {
     public quaternion InitialRotation;
+    public double TimeCreated;
+    public bool NoCollision;
 }

@@ -25,9 +25,14 @@ partial struct AlignmentSystem : ISystem
     {
         float duration = SystemAPI.GetSingleton<Level>().ThrustWindup;
 
+        EntityCommandBuffer ecb =
+            SystemAPI
+                .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
+                .CreateCommandBuffer(state.WorldUnmanaged);        
+
         new RotateToJob
             { Time = SystemAPI.Time.ElapsedTime
-            , Duration = duration
+            , ECB = ecb
             }
             .Schedule();
 
@@ -43,17 +48,19 @@ partial struct AlignmentSystem : ISystem
 partial struct RotateToJob : IJobEntity
 {
     public double Time;
-    public float Duration;
+    public EntityCommandBuffer ECB;
 
-    void Execute(in RotateTo windup, ref Rotation rotation)
+    void Execute(in RotateTo windup, ref Rotation rotation, Entity entity)
     {
+        float tau = (float)(Time - windup.TimeCreated) / windup.Duration;
+
         float amount = 
             ThrustDoll
                 .Util
                 .BezierComponent
                     ( 0f
                     , 1.1f
-                    , (float)(Time - windup.TimeCreated) / Duration
+                    , tau
                     );
         
         rotation.Value =
@@ -63,6 +70,11 @@ partial struct RotateToJob : IJobEntity
                     , windup.TargetRotation
                     , amount
                     );
+
+        if (tau > 1)
+        {
+            ECB.RemoveComponent<RotateTo>(entity);
+        }
     }
 }
 

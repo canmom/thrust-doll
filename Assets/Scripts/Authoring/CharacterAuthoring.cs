@@ -28,6 +28,13 @@ class CharacterBaker : Baker<CharacterAuthoring>
                 { Coefficient = authoring.DragCoefficient
                 }
             );
+        AddComponent
+            ( new DynamicAnimationClip
+                { Index = AnimationClipIndex.LevelFlight
+                , SampleTime = 0
+                , Weight = 0
+                }
+            );
         // AddComponent
         //     (new DampedRotationSpring
         //         { Stiffness = authoring.RotationSpringStiffness

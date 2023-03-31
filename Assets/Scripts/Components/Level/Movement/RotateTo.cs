@@ -7,6 +7,8 @@ public struct RotateTo : IStatus, IComponentData
 
     public quaternion InitialRotation;
     public quaternion TargetRotation;
+
+    public float Duration;
 }
 
 public struct Flip : IStatus, IComponentData

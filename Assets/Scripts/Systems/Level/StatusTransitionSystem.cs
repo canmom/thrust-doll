@@ -10,7 +10,7 @@ using Unity.Collections;
 [UpdateInGroup(typeof(LevelSystemGroup))]
 partial struct StatusTransitionSystem : ISystem, ISystemStartStop
 {
-    StatusJobFields<RotateTo> rotateToFields;
+    //StatusJobFields<RotateTo> rotateToFields;
     StatusJobFields<ThrustCooldown> thrustCooldownFields;
 
     [BurstCompile]
@@ -21,14 +21,14 @@ partial struct StatusTransitionSystem : ISystem, ISystemStartStop
         Level levelSettings = SystemAPI.GetSingleton<Level>();
 
         thrustCooldownFields = getStatusFields<ThrustCooldown>(ref state, queryBuilder, levelSettings.ThrustCooldown);
-        rotateToFields = getStatusFields<RotateTo>(ref state, queryBuilder, levelSettings.ThrustWindup);
+        //rotateToFields = getStatusFields<RotateTo>(ref state, queryBuilder, levelSettings.ThrustWindup);
     }
 
     [BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
         scheduleEndJob<ThrustCooldown>(ref state, thrustCooldownFields);
-        scheduleEndJob<RotateTo>(ref state, rotateToFields);
+        //scheduleEndJob<RotateTo>(ref state, rotateToFields);
     }
 
     [BurstCompile]

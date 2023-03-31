@@ -1,5 +1,7 @@
 using Unity.Entities;
 using Unity.Burst;
+using Unity.Transforms;
+using Unity.Mathematics;
 using Latios;
 
 [BurstCompile]
@@ -58,16 +60,6 @@ partial struct SequenceSystem : ISystem
             { Time = SystemAPI.Time.ElapsedTime
             , ReverseDuration = level.ThrustWindup
             , TransitionDuration = turnSmallToActiveTransition
-            , ECB =
-                ecbSystem
-                    .CreateCommandBuffer(state.WorldUnmanaged)
-            }
-            .Schedule();
-
-        new WallkickEndJob
-            { Time = SystemAPI.Time.ElapsedTime
-            , WallkickStopDuration = level.WallkickStopDuration
-            , TransitionDuration = level.TurnSmallDuration - level.WallkickStopDuration
             , ECB =
                 ecbSystem
                     .CreateCommandBuffer(state.WorldUnmanaged)
@@ -139,6 +131,7 @@ partial struct FlipEndJob : IJobEntity
                     { TimeCreated = Time
                     , InitialRotation = flip.BackRotation
                     , TargetRotation = flip.TargetRotation
+                    , Duration = ReverseDuration
                     }
                 );
         }
@@ -170,38 +163,6 @@ partial struct ThrustActiveEndJob : IJobEntity
                     , Looping = true
                     }
                 );
-        }
-    }
-}
-
-partial struct WallkickEndJob : IJobEntity
-{
-    public double Time;
-    public double WallkickStopDuration;
-    public float TransitionDuration;
-
-    public EntityCommandBuffer ECB;
-
-    void Execute
-        ( in WallKick wallkick
-        , ref Velocity velocity
-        , Entity entity
-        )
-    {
-        if (((float) (Time - wallkick.TimeCreated)) > WallkickStopDuration)
-        {
-            velocity.Value = wallkick.ReflectionVelocity;
-            ECB.RemoveComponent<WallKick>(entity);
-            ECB.AddComponent
-                ( entity
-                , new AnimationTransition
-                    { NextIndex = AnimationClipIndex.LevelFlight
-                    , Start = (float) Time
-                    , Duration = TransitionDuration
-                    , Looping = true
-                    }
-                );
-            ECB.AddComponent<ClearingWall>(entity);
         }
     }
 }

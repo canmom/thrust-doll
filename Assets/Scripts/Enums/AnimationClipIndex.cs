@@ -20,4 +20,5 @@ public enum AnimationClipIndex
 , TurnSmallRight
 , TurnReverse
 , Thrust
+, WallKickShallow
 }
