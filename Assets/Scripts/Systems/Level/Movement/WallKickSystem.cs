@@ -91,7 +91,7 @@ partial struct WallKickSystem : ISystem
 }
 
 [WithAll(typeof(Character))]
-[WithNone(typeof(WallKick),typeof(FaceWall))]
+[WithNone(typeof(WallKick),typeof(FaceWall),typeof(Flip))]
 partial struct FaceWallStartJob : IJobEntity
 {
     public double Time;
@@ -115,11 +115,8 @@ partial struct FaceWallStartJob : IJobEntity
                 };
 
         //end any thrust early
-        ECB.RemoveComponent<ThrustActive>(entity);
         ECB.RemoveComponent<Flip>(entity);
         ECB.RemoveComponent<RotateTo>(entity);
-        ECB.RemoveComponent<Thrust>(entity);
-        ECB.RemoveComponent<ThrustWindup>(entity);
 
         ECB.AddComponent
             ( entity
@@ -211,7 +208,14 @@ partial struct WallKickLerpJob : IJobEntity
                         , collision.Normal
                         );
 
-            ECB.RemoveComponent<FaceWall>(entity);
+            ComponentTypeSet toRemove =
+                new ComponentTypeSet
+                    ( typeof(Thrust)
+                    , typeof(ThrustActive)
+                    , typeof(FaceWall)
+                    );
+
+            ECB.RemoveComponent(entity, toRemove);
             ECB.AddComponent
                 ( entity
                 , new RotateTo

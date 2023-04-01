@@ -68,6 +68,7 @@ partial struct ThrustStartSystem : ISystem
 }
 
 [WithAll(typeof(Character))]
+[WithNone(typeof(WallKick))]
 partial struct ThrustStartJob : IJobEntity
 {
     public quaternion CameraRotation;
@@ -127,7 +128,7 @@ partial struct ThrustStartJob : IJobEntity
                         : AnimationClipIndex.TurnSmallDown;
 
             ECB.AddComponent
-                (  player
+                ( player
                 , new RotateTo
                     { TimeCreated = Time
                     , InitialRotation = rotation.Value
@@ -137,7 +138,7 @@ partial struct ThrustStartJob : IJobEntity
                 );
 
             ECB.AddComponent
-                (  player
+                ( player
                 , new AnimationTransition
                     { NextIndex = clipToPlay
                     , Start = (float) Time
@@ -146,8 +147,9 @@ partial struct ThrustStartJob : IJobEntity
                     }
                 );
         } else {
+            ECB.RemoveComponent<FaceWall>(player);
             ECB.AddComponent
-                (  player
+                ( player
                 , new Flip
                     { TimeCreated = Time
                     , InitialRotation = rotation.Value
@@ -162,7 +164,7 @@ partial struct ThrustStartJob : IJobEntity
                 );
 
             ECB.AddComponent
-                (  player
+                ( player
                 , new AnimationTransition
                     { NextIndex = AnimationClipIndex.TurnReverse 
                     , Start = (float) Time
@@ -175,7 +177,7 @@ partial struct ThrustStartJob : IJobEntity
         }
 
         ECB.AddComponent
-            (  player
+            ( player
             , new ThrustCooldown
                 { TimeCreated = Time
                 , InverseDuration = InverseThrustCooldown
