@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Configurator.uss?fileID=7433441132597879392&amp;guid=d60e53bcf16c139e69a757fb4ada4f89&amp;type=3#Configurator" />
+    <ui:VisualElement name="DeathScreenRoot" style="position: absolute; bottom: 50px; right: 0; padding-left: 40px; padding-right: 40px; padding-bottom: 10px; background-image: url(&apos;project://database/Assets/UI%20Toolkit/SVG/corner-cut.svg?fileID=7388822144124034973&amp;guid=d3b0c229c8d21187bbaeb4b04834f1e7&amp;type=3#corner-cut&apos;); -unity-background-scale-mode: scale-and-crop; -unity-slice-bottom: 0; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; transition-property: translate; transition-duration: 0.5s; transition-timing-function: ease-out; translate: 120% 0; transition-delay: 0.5s;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; flex-direction: row;">
+            <ui:Label tabindex="-1" text="Thrust//Doll" display-tooltip-when-elided="true" name="Title" class="title" style="-unity-text-align: upper-right; margin-right: 0; margin-left: 0; margin-bottom: -20px;" />
+            <ui:Label tabindex="-1" text=" expended" display-tooltip-when-elided="true" name="Expended" class="title" style="-unity-text-align: upper-right; margin-right: 0; margin-left: 0; transition-timing-function: ease-in; transition-duration: 0.8s; transition-property: color; margin-bottom: -20px; transition-delay: 1s;" />
+        </ui:VisualElement>
+        <ui:Label text="&lt;i&gt;dolls killed in this deployment:&lt;/i&gt; &lt;b&gt;11&lt;/b&gt;" display-tooltip-when-elided="true" name="DeathCounter" class="endscreenline fadein" style="transition-timing-function: ease-in;" />
+        <ui:Label tabindex="-1" text="&lt;i&gt;this doll lived for:&lt;/i&gt; &lt;b&gt;14.3 seconds&lt;b&gt;" display-tooltip-when-elided="true" name="RunTime" class="endscreenline fadein" style="transition-delay: 2s; transition-timing-function: ease-in;" />
+        <ui:Label tabindex="-1" text="[&lt;b&gt;LMB&lt;/b&gt;] - launch another | [&lt;b&gt;esc&lt;/b&gt;] - retreat" display-tooltip-when-elided="true" name="KeyOptions" class="endscreenline" style="margin-top: 20px;" />
+    </ui:VisualElement>
+</ui:UXML>

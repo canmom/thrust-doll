@@ -1,5 +1,5 @@
 .title {
-    -unity-font-style: bold;
+    -unity-font-style: normal;
     font-size: 120px;
     -unity-font-definition: url('project://database/Assets/Fonts/BebasNeue-Regular%20SDF.asset?fileID=11400000&guid=6d8a6278113870eb88c63b408e5ea6e3&type=2#BebasNeue-Regular SDF');
 }
@@ -27,4 +27,25 @@
 
 .description {
     font-size: 21px;
+}
+
+.endscreenline {
+    font-size: 32px;
+    -unity-font-definition: url('project://database/Assets/Fonts/Sofia%20Sans/static/SofiaSans-Light%20SDF.asset?fileID=11400000&guid=d788e08445b1e6296a2e57bb504c58de&type=2#SofiaSans-Light SDF');
+    -unity-text-align: upper-right;
+    margin-top: 5px;
+    margin-bottom: 0;
+    margin-right: 0;
+    margin-left: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.fadein {
+    opacity: 0;
+    transition-property: opacity;
+    transition-duration: 0.5s;
+    transition-delay: 1.5s;
 }

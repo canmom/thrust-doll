@@ -17,6 +17,8 @@ partial struct ProjectilePlayerCollisionSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         _latiosWorld = state.GetLatiosWorldUnmanaged();
+
+        state.RequireForUpdate<Run>();
     }
 
     [BurstCompile]
@@ -28,36 +30,48 @@ partial struct ProjectilePlayerCollisionSystem : ISystem
     //[BurstCompile]
     public void OnUpdate(ref SystemState state)
     {
-        var projectileCollisionLayer =
+        BlackboardEntity blackboard =
             _latiosWorld
-                .sceneBlackboardEntity
+                .sceneBlackboardEntity;
+
+        var projectileCollisionLayer =
+            blackboard
                 .GetCollectionComponent<ProjectileCollisionLayer>(true)
                 .Layer;
+        
+        EntityCommandBuffer ecb =
+            SystemAPI
+                .GetSingleton<EndSimulationEntityCommandBufferSystem.Singleton>()
+                .CreateCommandBuffer(state.WorldUnmanaged);
 
-        // new PlayerColliderCastJob
-        //     { TargetLayer = wallCollisionLayer
-        //     }
-        //     .Schedule();
+        new PlayerColliderCastJob
+            { TargetLayer = projectileCollisionLayer
+            , Blackboard = blackboard
+            , Time = SystemAPI.Time.ElapsedTime
+            , RunStartTime = blackboard.GetComponentData<Run>().Start
+            , ECB = ecb
+            }
+            .Schedule();
 
-        var playerCollisionLayer =
-            _latiosWorld
-                .sceneBlackboardEntity
-                .GetCollectionComponent<PlayerCollisionLayer>(true)
-                .Layer;
+        // var playerCollisionLayer =
+        //     _latiosWorld
+        //         .sceneBlackboardEntity
+        //         .GetCollectionComponent<PlayerCollisionLayer>(true)
+        //         .Layer;
 
-        var processor = new DamagePlayerProcessor
-        {
+        // var processor = new DamagePlayerProcessor
+        // {
 
-        };
+        // };
 
-        state.Dependency =
-            Latios.Psyshock.Physics
-                .FindPairs
-                    ( projectileCollisionLayer
-                    , playerCollisionLayer
-                    , processor
-                    )
-                    .ScheduleParallel(state.Dependency);
+        // state.Dependency =
+        //     Latios.Psyshock.Physics
+        //         .FindPairs
+        //             ( projectileCollisionLayer
+        //             , playerCollisionLayer
+        //             , processor
+        //             )
+        //             .ScheduleParallel(state.Dependency);
 
         //state.Dependency = PhysicsDebug.DrawLayer(wallCollisionLayer).ScheduleParallel(state.Dependency);
 
@@ -94,6 +108,14 @@ partial struct PlayerColliderCastJob : IJobEntity
 {
     public CollisionLayer TargetLayer;
 
+    public Entity Blackboard;
+
+    public double Time;
+
+    public double RunStartTime;
+
+    public EntityCommandBuffer ECB;
+
     void Execute
         ( in Collider collider
         , in Rotation rotation
@@ -109,19 +131,25 @@ partial struct PlayerColliderCastJob : IJobEntity
 
         //PhysicsDebug.DrawCollider(collider, transform, UnityEngine.Color.blue);
 
-        // if
-        //     ( Physics
-        //         .ColliderCast
-        //             ( collider
-        //             , transform
-        //             , translation.Value
-        //             , TargetLayer
-        //             , out ColliderCastResult result
-        //             , out LayerBodyInfo layerBodyInfo
-        //             )
-        //     )
-        // {
-        //     UnityEngine.Debug.Log("Player hit a wall");
-        // }
+        if
+            ( Physics
+                .ColliderCast
+                    ( collider
+                    , transform
+                    , translation.Value
+                    , TargetLayer
+                    , out ColliderCastResult result
+                    , out LayerBodyInfo layerBodyInfo
+                    )
+            )
+        {
+            ECB.AddComponent
+                ( Blackboard
+                , new RunEnd
+                    { Time = Time
+                    , Duration = Time - RunStartTime
+                    }
+                );
+        }
     }
 }

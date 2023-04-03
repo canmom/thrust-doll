@@ -25,4 +25,6 @@ partial struct Level : IComponentData
     public Entity BulletPrefab;
 
     public float MetaballSmoothing;
+
+    public double SlowMoEnd;
 }
