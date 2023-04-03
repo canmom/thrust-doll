@@ -92,6 +92,7 @@ partial struct WallKickSystem : ISystem
 
 [WithAll(typeof(Character))]
 [WithNone(typeof(WallKick),typeof(FaceWall),typeof(Flip))]
+[BurstCompile]
 partial struct FaceWallStartJob : IJobEntity
 {
     public double Time;
@@ -131,6 +132,7 @@ partial struct FaceWallStartJob : IJobEntity
     }
 }
 
+[BurstCompile]
 partial struct WallKickLerpJob : IJobEntity
 {
     public double Time;
@@ -210,9 +212,9 @@ partial struct WallKickLerpJob : IJobEntity
 
             ComponentTypeSet toRemove =
                 new ComponentTypeSet
-                    ( typeof(Thrust)
-                    , typeof(ThrustActive)
-                    , typeof(FaceWall)
+                    ( ComponentType.ReadWrite<Thrust>()
+                    , ComponentType.ReadWrite<ThrustActive>()
+                    , ComponentType.ReadWrite<FaceWall>()
                     );
 
             ECB.RemoveComponent(entity, toRemove);
@@ -246,6 +248,7 @@ partial struct WallKickLerpJob : IJobEntity
 }
 
 [WithNone(typeof(SDFCollision))]
+[BurstCompile]
 partial struct FaceWallEndJob : IJobEntity
 {
     public double Time;
@@ -281,6 +284,7 @@ partial struct FaceWallEndJob : IJobEntity
     }
 }
 
+[BurstCompile]
 partial struct WallkickEndJob : IJobEntity
 {
     public double Time;

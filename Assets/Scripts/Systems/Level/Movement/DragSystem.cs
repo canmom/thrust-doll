@@ -35,6 +35,7 @@ partial struct DragSystem : ISystem
     }
 }
 
+[BurstCompile]
 partial struct DampingJob : IJobEntity
 {
     public float DeltaTime;

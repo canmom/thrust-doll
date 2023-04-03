@@ -35,6 +35,7 @@ partial struct RotationSpringSystem : ISystem
     }
 }
 
+[BurstCompile]
 partial struct RotationSpringJob : IJobEntity
 {
     public float DeltaTime;

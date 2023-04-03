@@ -50,10 +50,12 @@ partial struct AnimationClipPlayerSystem : ISystem
 }
 
 [WithNone(typeof(TransientAnimationClip), typeof(AnimationTransition))]
+[BurstCompile]
 partial struct AnimationClipPlayerJob : IJobEntity
 {
     public float Time;
 
+    [BurstCompile]
     void Execute
         ( ref DynamicBuffer<OptimizedBoneToRoot> btrBuffer
         , in OptimizedSkeletonHierarchyBlobReference hierarchyRef

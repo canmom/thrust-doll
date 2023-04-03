@@ -45,6 +45,7 @@ partial struct AlignmentSystem : ISystem
     }
 }
 
+[BurstCompile]
 partial struct RotateToJob : IJobEntity
 {
     public double Time;
@@ -78,6 +79,7 @@ partial struct RotateToJob : IJobEntity
     }
 }
 
+[BurstCompile]
 partial struct FlipJob : IJobEntity
 {
     public double Time;

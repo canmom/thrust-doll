@@ -41,6 +41,7 @@ partial struct ProjectileWallCollisionSystem : ISystem
 }
 
 [WithAll(typeof(Projectile), typeof(SDFCollision))]
+[BurstCompile]
 partial struct ProjectileWallCollisionJob : IJobEntity
 {
     public DestroyCommandBuffer.ParallelWriter DCB;

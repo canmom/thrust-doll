@@ -69,6 +69,7 @@ partial struct ThrustStartSystem : ISystem
 
 [WithAll(typeof(Character))]
 [WithNone(typeof(WallKick))]
+[BurstCompile]
 partial struct ThrustStartJob : IJobEntity
 {
     public quaternion CameraRotation;

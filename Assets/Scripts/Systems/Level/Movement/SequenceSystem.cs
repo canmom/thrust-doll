@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Latios;
 
 [BurstCompile]
+[UpdateInGroup(typeof(LevelSystemGroup))]
 partial struct SequenceSystem : ISystem
 {
     LatiosWorldUnmanaged _latiosWorld;
@@ -68,6 +69,7 @@ partial struct SequenceSystem : ISystem
     }
 }
 
+[BurstCompile]
 partial struct ThrustWindupEndJob : IJobEntity
 {
     public double Time;
@@ -108,6 +110,7 @@ partial struct ThrustWindupEndJob : IJobEntity
     }
 }
 
+[BurstCompile]
 partial struct FlipEndJob : IJobEntity
 {
     public double Time;
@@ -138,6 +141,7 @@ partial struct FlipEndJob : IJobEntity
     }
 }
 
+[BurstCompile]
 partial struct ThrustActiveEndJob : IJobEntity
 {
     public double Time;

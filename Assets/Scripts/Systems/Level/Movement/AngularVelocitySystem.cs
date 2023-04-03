@@ -34,6 +34,7 @@ partial struct AngularVelocitySystem : ISystem
     }
 }
 
+[BurstCompile]
 partial struct AngularVelocityJob : IJobEntity
 {
     public float DeltaTime;

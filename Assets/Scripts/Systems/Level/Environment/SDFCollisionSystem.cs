@@ -60,6 +60,7 @@ partial struct SDFCollisionSystem : ISystem
     }
 }
 
+[BurstCompile]
 partial struct SDFCollisionJob : IJobEntity
 {
     [ReadOnly] public NativeArray<Metaball> MetaballRadii;
@@ -69,6 +70,7 @@ partial struct SDFCollisionJob : IJobEntity
     [NativeDisableParallelForRestriction]
     public ComponentLookup<SDFCollision> CollisionLookup;
 
+    [BurstCompile]
     void Execute
         ( [ChunkIndexInQuery] int chunkIndex
         , Entity entity
