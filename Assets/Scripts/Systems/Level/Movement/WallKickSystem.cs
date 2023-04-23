@@ -87,6 +87,9 @@ partial struct WallKickSystem : ISystem
                     .CreateCommandBuffer(state.WorldUnmanaged)
             }
             .Schedule();
+
+        new CorpseHitWallJob {}
+            .Schedule();
     }
 }
 
@@ -132,6 +135,7 @@ partial struct FaceWallStartJob : IJobEntity
     }
 }
 
+[WithAll(typeof(Character))]
 [BurstCompile]
 partial struct WallKickLerpJob : IJobEntity
 {
@@ -247,6 +251,7 @@ partial struct WallKickLerpJob : IJobEntity
     }
 }
 
+[WithAll(typeof(Character))]
 [WithNone(typeof(SDFCollision))]
 [BurstCompile]
 partial struct FaceWallEndJob : IJobEntity
@@ -284,6 +289,7 @@ partial struct FaceWallEndJob : IJobEntity
     }
 }
 
+[WithAll(typeof(Character))]
 [BurstCompile]
 partial struct WallkickEndJob : IJobEntity
 {
@@ -327,6 +333,24 @@ partial struct WallkickEndJob : IJobEntity
                     , NoCollision = true
                     }
                 );
+        }
+    }
+}
+
+[WithAll(typeof(Corpse))]
+partial struct CorpseHitWallJob : IJobEntity
+{
+    void Execute
+        ( in SDFCollision collision
+        , in CollidesWithSDF collider
+        , ref Velocity velocity
+        , ref AngularVelocity angularVelocity
+        )
+    {
+        if (collision.Distance <= collider.InnerRadius)
+        {
+            velocity.Value = new float3(0);
+            angularVelocity.Value = new float3(0);
         }
     }
 }

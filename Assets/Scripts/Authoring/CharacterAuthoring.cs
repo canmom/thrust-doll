@@ -4,8 +4,7 @@ using Unity.Mathematics;
 public class CharacterAuthoring : UnityEngine.MonoBehaviour
 {
     public float DragCoefficient;
-    public float RotationSpringStiffness;
-    public float RotationSpringDamping;
+    public float AngularDamping;
 }
 
 class CharacterBaker : Baker<CharacterAuthoring>
@@ -26,6 +25,11 @@ class CharacterBaker : Baker<CharacterAuthoring>
         AddComponent
             ( new Drag
                 { Coefficient = authoring.DragCoefficient
+                }
+            );
+        AddComponent
+            ( new AngularDamping
+                { Coefficient = authoring.AngularDamping
                 }
             );
         AddComponent

@@ -23,8 +23,11 @@ partial struct Level : IComponentData
 
     public Entity CubePrefab;
     public Entity BulletPrefab;
+    public Entity DollPrefab;
 
     public float MetaballSmoothing;
 
     public double SlowMoEnd;
+
+    public float BulletMass;
 }

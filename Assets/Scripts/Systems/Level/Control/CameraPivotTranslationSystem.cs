@@ -11,7 +11,7 @@ partial struct CameraPivotTranslationSystem : ISystem
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
-
+        state.RequireForUpdate<Character>();
     }
 
     [BurstCompile]

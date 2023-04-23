@@ -1,8 +1,10 @@
 using Unity.Entities;
 using Unity.Burst;
+using Unity.Transforms;
 using Latios;
+using Latios.Systems;
 
-[UpdateInGroup(typeof(InitializationSystemGroup))]
+[UpdateInGroup(typeof(PreSyncPointGroup))]
 [BurstCompile]
 partial struct RunStartSystem : ISystem
 {
@@ -12,6 +14,9 @@ partial struct RunStartSystem : ISystem
     public void OnCreate(ref SystemState state)
     {
         _latiosWorld = state.GetLatiosWorldUnmanaged();
+
+        state.RequireForUpdate<StartNewRun>();
+        state.RequireForUpdate<SpawnPoint>();
     }
 
     [BurstCompile]
@@ -28,13 +33,6 @@ partial struct RunStartSystem : ISystem
                 .sceneBlackboardEntity;
 
         blackboard
-            .AddComponentData
-                ( new Run
-                    { Start = SystemAPI.Time.DeltaTime
-                    }
-                );
-
-        blackboard
             .AddComponentDataIfMissing
                 ( new LevelStats
                     { Deaths = 0
@@ -42,6 +40,35 @@ partial struct RunStartSystem : ISystem
                     }
                 );
 
-        state.Enabled = false;
+        EntityCommandBuffer ecb =
+            _latiosWorld
+                .syncPoint
+                .CreateEntityCommandBuffer();
+
+        ecb.RemoveComponent<StartNewRun>(blackboard);
+
+        ecb.AddComponent
+            ( blackboard
+            , new Run
+                { Start = SystemAPI.Time.ElapsedTime
+                }
+            );
+
+        Translation spawnPoint =
+            SystemAPI
+                .GetComponent<Translation>
+                    ( SystemAPI
+                        .GetSingletonEntity<SpawnPoint>()
+                    );
+
+        Entity dollPrefab =
+            blackboard
+                .GetComponentData<Level>()
+                .DollPrefab;
+
+        _latiosWorld
+            .syncPoint
+            .CreateInstantiateCommandBuffer<Translation>()
+            .Add(dollPrefab, spawnPoint);
     }
 }

@@ -624,6 +624,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5550599274df12d0a8e7a9f387703aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _deathCounterTemplate: 'dolls killed in this deployment: <b>{0}</b>'
+  _runTimeTemplate: 'this doll lived for: <b>{0:0.0} seconds</b>'
+  _animationDelay: 0.5
+  _slideDuration: 0.5
+  _turnRedDuration: 0.8
+  _fadeInDuration: 1
+  _animationOverlap: 0.3
 --- !u!114 &1823751440
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -32,6 +32,7 @@ partial class RunEndSystem : SubSystem
 
             LevelStats stats = blackboard.GetComponentData<LevelStats>();
 
+            //case of death
             LevelStats newStats =
                 new LevelStats
                     { Deaths = ++stats.Deaths
@@ -41,6 +42,11 @@ partial class RunEndSystem : SubSystem
             blackboard.SetComponentData( newStats );
 
             GameEndScreen.Instance.DisplayDeathScreen(runEnd.Duration, newStats.Deaths);
+
+            Entity deadCharacter = SystemAPI.GetSingletonEntity<Character>();
+
+            ecb.RemoveComponent<Character>(deadCharacter);
+            ecb.AddComponent<Corpse>(deadCharacter);
 
             ecb.RemoveComponent<Run>(blackboard);
         }

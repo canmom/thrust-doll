@@ -57,7 +57,7 @@ public class GameEndScreen : MonoBehaviour
             new List<TimeValue>
                 { _animationDelay
                 + _slideDuration 
-                - _animationOverlap
+                - _animationOverlap * 2f
                 };
         _expendedElement.style.transitionDuration =
             new List<TimeValue> { _turnRedDuration };
@@ -97,5 +97,16 @@ public class GameEndScreen : MonoBehaviour
         _expendedElement.style.color = Color.red;
         _deathCounterElement.style.opacity = 1f;
         _runTimeElement.style.opacity = 1f;
+    }
+
+    public void HideDeathScreen()
+    {
+        var oldTransitionDelay = _root.style.transitionDelay;
+        _root.style.transitionDelay = new List<TimeValue> {0};
+        _root.style.translate = new Translate(new Length(120,LengthUnit.Percent), 0);
+        _root.style.transitionDelay = oldTransitionDelay;
+        _expendedElement.style.color = Color.white;
+        _deathCounterElement.style.opacity = 0f;
+        _runTimeElement.style.opacity = 0f;
     }
 }

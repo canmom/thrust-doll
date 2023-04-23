@@ -8,6 +8,11 @@ using Latios;
 [UpdateInGroup(typeof(Latios.Systems.LatiosWorldSyncGroup))]
 partial class MetaballBakingSystem : SubSystem
 {
+    protected override void OnCreate()
+    {
+        RequireForUpdate<Level>();
+    }
+
     protected override void OnUpdate()
     {
         EntityQuery query =

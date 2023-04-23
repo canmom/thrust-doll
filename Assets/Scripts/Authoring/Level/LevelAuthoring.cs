@@ -20,12 +20,15 @@ public class LevelAuthoring : UnityEngine.MonoBehaviour
 
     public float IncreasedDragDuringFlip = 10f;
 
+    public UnityEngine.GameObject DollPrefab;
     public UnityEngine.GameObject CubePrefab;
     public UnityEngine.GameObject BulletPrefab;
 
     public float MetaballSmoothing = 1.2f;
 
     public double SlowMoEnd = 5;
+
+    public float BulletMass = 1;
 }
 
 public class LevelBaker : Baker<LevelAuthoring>
@@ -47,11 +50,15 @@ public class LevelBaker : Baker<LevelAuthoring>
                 , WallkickStopDuration = authoring.WallkickStopDuration
                 , WallkickRealignmentDuration = authoring.WallkickRealignmentDuration
                 , IncreasedDragDuringFlip = authoring.IncreasedDragDuringFlip
+                , DollPrefab = GetEntity(authoring.DollPrefab)
                 , CubePrefab = GetEntity(authoring.CubePrefab)
                 , BulletPrefab = GetEntity(authoring.BulletPrefab)
                 , MetaballSmoothing = authoring.MetaballSmoothing
                 , SlowMoEnd = authoring.SlowMoEnd
+                , BulletMass = authoring.BulletMass
                 }
             );
+
+        AddComponent<StartNewRun>();
     }
 }
