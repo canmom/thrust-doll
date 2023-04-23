@@ -42,8 +42,8 @@ Material:
     - _Cull: 0
     - _DistanceMultiplier: 1
     - _EnvironmentReflections: 1
-    - _Loop: 100
-    - _Metallic: 0.5
+    - _Loop: 60
+    - _Metallic: 0.782
     - _MinDistance: 0.0936
     - _NormalDelta: 0.0001
     - _NumMetaballs: 7
@@ -51,8 +51,9 @@ Material:
     - _ShadowLoop: 10
     - _ShadowMinDistance: 0.01
     - _Smooth: 0.73
-    - _Smoothness: 0.5
+    - _Smoothness: 0.071
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _BaseColor: {r: 0.42715973, g: 0.10553357, b: 0.17004722, a: 1}
+    - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_BuildTextureStacks: []

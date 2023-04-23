@@ -64,11 +64,8 @@ MonoBehaviour:
       expDistance += exp( - _Smooth * sphereDist);\n    }\n\n    return log(expDistance)/_Smooth;\n\n}"
     folded: 1
   - key: PostEffect
-    value: 'inline void PostEffect(RaymarchInfo ray, inout PostEffectOutput o)
-
-      {
-
-      }'
+    value: "inline void PostEffect(RaymarchInfo ray, inout PostEffectOutput o)\n{\n   
+      //o = float4(ray.loop/ray.maxLoop, 0, 0, 1);\n}"
     folded: 1
   constants: {fileID: 11400000, guid: 3fc7bca6894034dec9dc046eade7d602, type: 2}
   basicFolded: 1

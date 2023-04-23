@@ -95,6 +95,7 @@ inline float DistanceFunction(float3 pos)
 // @block PostEffect
 inline void PostEffect(RaymarchInfo ray, inout PostEffectOutput o)
 {
+    //o = float4(ray.loop/ray.maxLoop, 0, 0, 1);
 }
 // @endblock
 
